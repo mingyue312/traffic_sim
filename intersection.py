@@ -20,10 +20,23 @@ class Intersection:
         self.south = None
         self.west = None
         self.east = None
+        self.north_green = macros.Green_Phase
+        self.south_green = macros.Green_Phase
+        self.west_green = macros.Green_Phase
+        self.east_green = macros.Green_Phase
+        self.north_red = macros.Red_Phase
+        self.south_red = macros.Red_Phase
+        self.west_red = macros.Red_Phase
+        self.east_red = macros.Red_Phase
+        self.north_yellow = macros.Yellow_Phase
+        self.south_yellow = macros.Yellow_Phase
+        self.west_yellow = macros.Yellow_Phase
+        self.east_yellow = macros.Yellow_Phase
 
     def set_neighbors(self, north, south, west, east):
         self.north = north
         self.south = south
         self.west = west
         self.east = east
+
 
