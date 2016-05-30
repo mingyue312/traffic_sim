@@ -20,6 +20,7 @@ class Intersection:
         self.south = None
         self.west = None
         self.east = None
+        self.boundary = {}  #example: boundary(1)=[arrival, next arrival]   means intersection has boundary from west with arrival time and next arrival time
         self.north_green = macros.Green_Phase
         self.south_green = macros.Green_Phase
         self.west_green = macros.Green_Phase
@@ -33,10 +34,6 @@ class Intersection:
         self.west_yellow = macros.Yellow_Phase
         self.east_yellow = macros.Yellow_Phase
 
-    def set_neighbors(self, north, south, west, east):
-        self.north = north
-        self.south = south
-        self.west = west
-        self.east = east
+
 
 
