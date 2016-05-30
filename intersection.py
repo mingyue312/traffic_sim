@@ -1,8 +1,10 @@
 import macros
 
+phase_dictionary = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
+
 
 class Intersection:
-    def __init__(self, name, north_len, south_len, west_len, east_len):
+    def __init__(self, name, north_len, south_len, west_len, east_len, phase_dictionary):
         self.name = name
         self.north_len = north_len
         self.south_len = south_len
@@ -22,17 +24,11 @@ class Intersection:
         self.east = None
         self.boundary = {}  #example: boundary(1)=[arrival, next arrival]   means intersection has boundary from west with arrival time and next arrival time
         self.north_green = macros.Green_Phase
-        self.south_green = macros.Green_Phase
-        self.west_green = macros.Green_Phase
-        self.east_green = macros.Green_Phase
         self.north_red = macros.Red_Phase
-        self.south_red = macros.Red_Phase
-        self.west_red = macros.Red_Phase
-        self.east_red = macros.Red_Phase
-        self.north_yellow = macros.Yellow_Phase
-        self.south_yellow = macros.Yellow_Phase
-        self.west_yellow = macros.Yellow_Phase
-        self.east_yellow = macros.Yellow_Phase
+        self.current_phase = 1
+        self.phase_dictionary = phase_dictionary
+        self.reference_dictionary = {1: self.north_green, 2: macros.Yellow_Phase, 3: macros.clear_interval, 4: self.north_red, 5: macros.Yellow_Phase, 6: macros.clear_interval}
+
 
 
 

@@ -8,10 +8,11 @@ NORTH = 2
 EAST = 3
 SOUTH = 4
 FREQ = 1
-Green_Phase = 10
-Red_Phase = 3
+Green_Phase = 8
+Red_Phase = 5
 Yellow_Phase = 2
 Number_arrival = 5
 Time_increment = 0.01
+clear_interval = 1
 
 
