@@ -126,6 +126,7 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
         for i in range(0, len(current_car.my_path)-1):  #decide if
             if current_inter == current_car.my_path[i]:
                 next_inter = current_car.my_path[i+1]
+                break
             else:
                 print("A car is not on its path!!!!!!")
                 return -1

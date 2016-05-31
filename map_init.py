@@ -40,3 +40,15 @@ def map_init():
 
     return intersections
 
+
+def is_exit(inter, dir):
+    if dir == macros.WEST and inter[1] == 1:
+        return True
+    if dir == macros.EAST and inter[1] == len(macros.HOR_DIM)-1:
+        return True
+    if dir == macros.NORTH and inter[0] == 1:
+        return True
+    if dir == macros.SOUTH and inter[0] == len(macros.VER_DIM)-1:
+        return True
+    return False
+

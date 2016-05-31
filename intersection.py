@@ -4,7 +4,7 @@ phase_dictionary = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
 
 
 class Intersection:
-    def __init__(self, name, north_len, south_len, west_len, east_len, phase_dictionary):
+    def __init__(self, name, north_len, south_len, west_len, east_len):
         self.name = name
         self.north_len = north_len
         self.south_len = south_len

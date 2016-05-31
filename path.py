@@ -11,7 +11,7 @@ def find_path(init, fin):
     path = []
 
     if init == fin:
-        return init
+        return [init]
     
     if init[0] == fin[0]:          # only need to travel horizontally
         if fin[1] > init[1]:       # move right
@@ -78,6 +78,3 @@ def find_path(init, fin):
                     path.append((fin[0], i))
 
     return path
-
-
-print(find_path((1,1),(1,1)))
