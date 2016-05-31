@@ -16,3 +16,4 @@ class Node:
 
     def setNext(self,newnext):
         self.next = newnext
+
