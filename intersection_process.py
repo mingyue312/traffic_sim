@@ -13,9 +13,8 @@ def intersection_process(intersection, dic, list_of_vehicle):
         else:
             intersection.current_phase = intersection.current_phase + 1
 
-
     if intersection.current_phase == 1 or intersection.current_phase == 4:
-
+        print('meishi')
 
 
 def process_one_lane(current_lane, current_inter, cars_list, signal):
@@ -32,14 +31,6 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
         while current_car:
 
             current_car = current_car.next
-
-
-
-def get_position(position, speed, acceleration):
-    return position + speed * macros.TIME_INCREMENT + 0.5 * acceleration * macros.TIME_INCREMENT ** 2
-
-def get_speed(speed, acceleration):
-    return speed - acceleration*macros.TIME_INCREMENT
 
 
 def check_turn_and_change_lane(current_lane, current_inter, current_car):
