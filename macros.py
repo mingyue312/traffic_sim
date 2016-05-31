@@ -36,12 +36,5 @@ CLEAR_PHASE = 1
 
 NUMBER_ARRIVAL = 5
 TIME_INCREMENT = 0.01
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
->>>>>>> origin/master
-=======
->>>>>>> origin/master
 
 

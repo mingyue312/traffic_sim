@@ -23,6 +23,7 @@ def map_init():
 
     # decide which intersections represent a boundary and which side is the boundary
     # random function gives the arrival time and next arrival time of the car
+    # TODO: update for exponential arrival time
     for inter in intersections:
         if not intersections[inter].east:
             intersections[inter].boundary[macros.EASTL] = [round(random.uniform(0, macros.FREQ), 2), round(random.uniform(macros.FREQ, macros.FREQ * 2),2)]
