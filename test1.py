@@ -21,7 +21,6 @@ car4 = car(4)
 car1.next = car2.next
 car3.prev = car1
 
-current = car1
-while current:
-    print current.value
-    current = current.next
+a = car3.next
+if a != None:
+    print 1
