@@ -11,8 +11,7 @@ def find_path(init, fin):
     path = []
 
     if init == fin:
-        print("Error: cars cannot have same entrance and exit intersection!!!")
-        return -1
+        return init
     
     if init[0] == fin[0]:          # only need to travel horizontally
         if fin[1] > init[1]:       # move right
@@ -79,3 +78,6 @@ def find_path(init, fin):
                     path.append((fin[0], i))
 
     return path
+
+
+print(find_path((1,1),(1,1)))

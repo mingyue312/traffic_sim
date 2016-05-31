@@ -23,11 +23,12 @@ class Intersection:
         self.west = None
         self.east = None
         self.boundary = {}  #example: boundary(1)=[arrival, next arrival]   means intersection has boundary from west with arrival time and next arrival time
-        self.north_green = macros.Green_Phase
-        self.north_red = macros.Red_Phase
+        self.north_green = macros.GREEN_PHASE
+        self.north_red = macros.RED_PHASE
         self.current_phase = 1
         self.phase_dictionary = phase_dictionary
-        self.reference_dictionary = {1: self.north_green, 2: macros.Yellow_Phase, 3: macros.clear_interval, 4: self.north_red, 5: macros.Yellow_Phase, 6: macros.clear_interval}
+        self.reference_dictionary = {1: self.north_green, 2: macros.YELLOW_PHASE, 3: macros.CLEAR_PHASE,
+                                     4: self.north_red, 5: macros.YELLOW_PHASE, 6: macros.CLEAR_PHASE}
 
 
 
