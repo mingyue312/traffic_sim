@@ -22,12 +22,6 @@ class Car:
             if self.final_dir != self.initial_dir:
                 break
         self.my_path = path.find_path(self.initial_ent, self.final_exit)
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> origin/master
 
 
 
