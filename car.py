@@ -4,10 +4,10 @@ import path
 
 
 class Car:
-    def __init__(self, time_tag, initial_ent, initial_dir, speed):
+    def __init__(self, time_tag, initial_ent, speed):
         self.time_tag = time_tag
         self.initial_ent = initial_ent
-        self.initial_dir = initial_dir
+        self.initial_dir = -1
         self.final_exit = None
         self.final_dir = 0
         self.my_path = path.find_path(self.initial_ent, self.final_exit)
