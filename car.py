@@ -19,7 +19,7 @@ class Car:
         while True:
             self.final_exit = (random.randint(1, len(macros.VER_DIM)-1), random.randint(1, len(macros.HOR_DIM)-1))
             self.final_dir = random.randint(1,4)
-            if self.final_dir != self.initial_dir:
+            if self.final_exit != self.initial_ent or self.final_dir != self.initial_dir:
                 break
         self.my_path = path.find_path(self.initial_ent, self.final_exit)
 

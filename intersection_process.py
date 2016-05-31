@@ -27,6 +27,28 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
     turn = macros.STRAIGHT   # status for turning, 0: need to go straight, -1: need to turn left, 1: need to turn right
     change_lane = 0     # status for change lane, 0: don't need to change lane, 1: need to change lane
 
+    [turn, change_lane] = check_turn_and_change_lane(current_lane, current_inter, current_car)
+    if signal == macros.GREEN:
+        while current_car:
+
+            current_car = current_car.next
+
+
+
+def get_position(position, speed, acceleration):
+    return position + speed * macros.TIME_INCREMENT + 0.5 * acceleration * macros.TIME_INCREMENT ** 2
+
+def get_speed(speed, acceleration):
+    return speed - acceleration*macros.TIME_INCREMENT
+
+
+def check_turn_and_change_lane(current_lane, current_inter, current_car):
+    '''
+    process one lane, given the signal
+    '''
+    turn = macros.STRAIGHT   # status for turning, 0: need to go straight, -1: need to turn left, 1: need to turn right
+    change_lane = 0     # status for change lane, 0: don't need to change lane, 1: need to change lane
+
     if current_inter == current_car.my_path[-1]:    # already at destination
         if current_lane == macros.WESTL:
             if current_car.final_dir == macros.SOUTH:
@@ -144,51 +166,81 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
                 print("You cannot make a U turn!!!!!!!")
                 return -1
         elif current_lane == macros.NORTHL:
-            if next_inter[0] == current_inter[0]+1:
+            if next_inter[1] == current_inter[1]-1:
                 turn = macros.RIGHT
-                change_lane = 0
-            elif next_inter[0] == current_inter[0]-1:
-                turn = macros.LEFT
                 change_lane = 1
             elif next_inter[1] == current_inter[1]+1:
+                turn = macros.LEFT
+                change_lane = 0
+            elif next_inter[0] == current_inter[0]+1:
                 turn = 0
                 change_lane = 0
             else:
                 print("You cannot make a U turn!!!!!!!")
                 return -1
         elif current_lane == macros.NORTHR:
-            if next_inter[0] == current_inter[0]+1:
+            if next_inter[1] == current_inter[1]-1:
                 turn = macros.RIGHT
                 change_lane = 0
-            elif next_inter[0] == current_inter[0]-1:
+            elif next_inter[1] == current_inter[1]+1:
                 turn = macros.LEFT
                 change_lane = 1
-            elif next_inter[1] == current_inter[1]+1:
+            elif next_inter[0] == current_inter[0]+1:
                 turn = 0
                 change_lane = 0
             else:
                 print("You cannot make a U turn!!!!!!!")
                 return -1
         elif current_lane == macros.EASTL:
-
+            if next_inter[0] == current_inter[0]+1:
+                turn = macros.RIGHT
+                change_lane = 1
+            elif next_inter[0] == current_inter[0]-1:
+                turn = macros.LEFT
+                change_lane = 0
+            elif next_inter[1] == current_inter[1]-1:
+                turn = 0
+                change_lane = 0
+            else:
+                print("You cannot make a U turn!!!!!!!")
+                return -1
         elif current_lane == macros.EASTR:
-
+            if next_inter[0] == current_inter[0]+1:
+                turn = macros.RIGHT
+                change_lane = 0
+            elif next_inter[0] == current_inter[0]-1:
+                turn = macros.LEFT
+                change_lane = 1
+            elif next_inter[1] == current_inter[1]-1:
+                turn = 0
+                change_lane = 0
+            else:
+                print("You cannot make a U turn!!!!!!!")
+                return -1
         elif current_lane == macros.SOUTHL:
-
+            if next_inter[1] == current_inter[1]+1:
+                turn = macros.RIGHT
+                change_lane = 1
+            elif next_inter[1] == current_inter[1]-1:
+                turn = macros.LEFT
+                change_lane = 0
+            elif next_inter[0] == current_inter[0]+1:
+                turn = 0
+                change_lane = 0
+            else:
+                print("You cannot make a U turn!!!!!!!")
+                return -1
         elif current_lane == macros.SOUTHR:
-
-
-    if signal == macros.GREEN:
-        while current_car:
-
-            current_car = current_car.next
-
-
-
-def get_position(position, speed, acceleration):
-    return position + speed * macros.TIME_INCREMENT + 0.5 * acceleration * macros.TIME_INCREMENT ** 2
-
-def get_speed(speed, acceleration):
-    return speed - acceleration*macros.TIME_INCREMENT
-
-
+            if next_inter[1] == current_inter[1]-1:
+                turn = macros.RIGHT
+                change_lane = 0
+            elif next_inter[1] == current_inter[1]+1:
+                turn = macros.LEFT
+                change_lane = 1
+            elif next_inter[0] == current_inter[0]+1:
+                turn = 0
+                change_lane = 0
+            else:
+                print("You cannot make a U turn!!!!!!!")
+                return -1
+    return [turn, change_lane]
