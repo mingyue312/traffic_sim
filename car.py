@@ -5,8 +5,7 @@ import map_init
 
 
 class Car:
-    def __init__(self, time_tag, initial_ent, initial_dir, speed):
-        self.time_tag = time_tag
+    def __init__(self, initial_ent, initial_dir, speed):
         self.initial_ent = initial_ent
         self.initial_dir = initial_dir
         self.final_exit = None
