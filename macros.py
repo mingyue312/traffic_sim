@@ -24,10 +24,10 @@ SOUTHR = 8
 INITSPEED = 15      #initial entering speed of 15 m/s
 FREQ = 1            #shorter = more frequent car entering
 
-GREEN = 1
-YELLOW = 2
-CLEAR = 3
-RED = 4
+NSGREEN_EWRED = 1
+NSYELLOW_EWRED = 2
+NSRED_EWGREEN = 3
+NSRED_EWYELLOW =4
 
 GREEN_PHASE = 8
 RED_PHASE = 5

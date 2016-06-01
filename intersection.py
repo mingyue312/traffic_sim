@@ -1,6 +1,5 @@
 import macros
 
-phase_dictionary = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
 
 
 class Intersection:
@@ -26,9 +25,7 @@ class Intersection:
         self.north_green = macros.GREEN_PHASE
         self.north_red = macros.RED_PHASE
         self.current_phase = 1
-        self.phase_dictionary = phase_dictionary
-        self.reference_dictionary = {1: self.north_green, 2: macros.YELLOW_PHASE, 3: macros.CLEAR_PHASE,
-                                     4: self.north_red, 5: macros.YELLOW_PHASE, 6: macros.CLEAR_PHASE}
+
 
 
 

@@ -2,7 +2,7 @@ import macros
 
 ####list_of_vehicle
 ### add time_incre at the end of this function
-
+'''
 def intersection_process(intersection, dic, list_of_vehicle):
     if intersection.phase_dictionary[intersection.current_phase] > intersection.reference_dictionary[intersection.current_phase]:
         intersection.phase_dictionary[intersection.current_phase] = 0
@@ -15,7 +15,14 @@ def intersection_process(intersection, dic, list_of_vehicle):
 
     if intersection.current_phase == 1 or intersection.current_phase == 4:
         print('meishi')
+'''
 
+def intersection_process(intersection, action):
+    if action == 1:
+        if intersection.current_phase +1 >4:
+            intersection.current_phase = 0
+    else:
+        intersection.current_phase = intersection.current_phase + 1
 
 def process_one_lane(current_lane, current_inter, cars_list, signal):
     '''
@@ -27,7 +34,7 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
     change_lane = 0     # status for change lane, 0: don't need to change lane, 1: need to change lane
 
     [turn, change_lane] = check_turn_and_change_lane(current_lane, current_inter, current_car)
-    if signal == macros.GREEN:
+    if signal == macros.NSGREEN_EWRED:
         while current_car:
 
             current_car = current_car.next
