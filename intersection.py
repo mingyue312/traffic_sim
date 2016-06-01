@@ -1,7 +1,6 @@
 import macros
 
 
-
 class Intersection:
     def __init__(self, name, north_len, south_len, west_len, east_len):
         self.name = name
