@@ -36,6 +36,8 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
     [turn, change_lane] = check_turn_and_change_lane(current_lane, current_inter, current_car)
     if signal == macros.NSGREEN_EWRED:
         while current_car:
+            if current_car.prev == None:
+                if current_car.speed < macros.CRUISE_SPEED:
 
             current_car = current_car.next
 
