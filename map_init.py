@@ -22,21 +22,21 @@ def map_init():
                 intersections[inter_i].north = intersections[inter_o]
 
     # decide which intersections represent a boundary and which side is the boundary
-    # random function gives the arrival time and next arrival time of the car
+    # random function gives the next arrival time of each lane
     # TODO: update for exponential arrival time
     for inter in intersections:
         if not intersections[inter].east:
-            intersections[inter].boundary[macros.EASTL] = [round(random.uniform(0, macros.FREQ), 2), round(random.uniform(macros.FREQ, macros.FREQ * 2),2)]
-            intersections[inter].boundary[macros.EASTR] = [round(random.uniform(0, macros.FREQ), 2), round(random.uniform(macros.FREQ, macros.FREQ * 2),2)]
+            intersections[inter].boundary[macros.EASTL] = round(random.uniform(0, macros.FREQ), 2)
+            intersections[inter].boundary[macros.EASTR] = round(random.uniform(0, macros.FREQ), 2)
         if not intersections[inter].west:
-            intersections[inter].boundary[macros.WESTL] = [round(random.uniform(0, macros.FREQ), 2), round(random.uniform(macros.FREQ, macros.FREQ * 2),2)]
-            intersections[inter].boundary[macros.WESTR] = [round(random.uniform(0, macros.FREQ), 2), round(random.uniform(macros.FREQ, macros.FREQ * 2),2)]
+            intersections[inter].boundary[macros.WESTL] = round(random.uniform(0, macros.FREQ), 2)
+            intersections[inter].boundary[macros.WESTR] = round(random.uniform(0, macros.FREQ), 2)
         if not intersections[inter].north:
-            intersections[inter].boundary[macros.NORTHL] = [round(random.uniform(0, macros.FREQ), 2), round(random.uniform(macros.FREQ, macros.FREQ * 2),2)]
-            intersections[inter].boundary[macros.NORTHR] = [round(random.uniform(0, macros.FREQ), 2), round(random.uniform(macros.FREQ, macros.FREQ * 2),2)]
+            intersections[inter].boundary[macros.NORTHL] = round(random.uniform(0, macros.FREQ), 2)
+            intersections[inter].boundary[macros.NORTHR] = round(random.uniform(0, macros.FREQ), 2)
         if not intersections[inter].south:
-            intersections[inter].boundary[macros.SOUTHL] = [round(random.uniform(0, macros.FREQ), 2), round(random.uniform(macros.FREQ, macros.FREQ * 2),2)]
-            intersections[inter].boundary[macros.SOUTHR] = [round(random.uniform(0, macros.FREQ), 2), round(random.uniform(macros.FREQ, macros.FREQ * 2),2)]
+            intersections[inter].boundary[macros.SOUTHL] = round(random.uniform(0, macros.FREQ), 2)
+            intersections[inter].boundary[macros.SOUTHR] = round(random.uniform(0, macros.FREQ), 2)
 
     return intersections
 
