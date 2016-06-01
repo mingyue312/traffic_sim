@@ -17,6 +17,8 @@ class Car:
         self.next = None
         self.prev = None
         self.location = 0
+        self.turn = macros.STRAIGHT
+        self.change_lane = 0
 
         # TODO: could make this random process faster
         while True:
