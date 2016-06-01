@@ -27,6 +27,7 @@ def network_control(action):
                         current_car = map_init.intersections[inter].cars_queue[enter_lane]
                         while current_car.next:
                             current_car = current_car.next
+                        new_car.prev = current_car
                         current_car.next = new_car
                     # get next arrival time and save it to each lanes of each intersection
                     prev_arrival = map_init.intersections[inter].boundary[enter_lane]
@@ -36,7 +37,7 @@ def network_control(action):
             # Following block processes each intersection's car movements:
             # intersection_process.intersection_process(map_init.intersections[inter], action)
 
-        macros.SIM_TIME += macros.TIME_INCREMENT
+        macros.SIM_TIME = round(macros.SIM_TIME + macros.TIME_INCREMENT, 2)
 
 
 map_init.map_init()
