@@ -16,6 +16,7 @@ class Car:
         self.dist_to_front = 0
         self.next = None
         self.prev = None
+        self.location = 0
 
         # TODO: could make this random process faster
         while True:
