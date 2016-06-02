@@ -15,10 +15,10 @@ class Intersection:
         self.west = None
         self.east = None
         self.boundary = {}  #example: boundary(1)=[arrival, next arrival]   means intersection has boundary from west with arrival time and next arrival time
-        self.north_green = macros.GREEN_PHASE
-        self.north_red = macros.RED_PHASE
         self.current_phase = 1
         self.action = 0
+        self.yellow = 2
+        self.count_yellow = 0
 
 
 

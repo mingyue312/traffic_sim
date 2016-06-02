@@ -2,30 +2,16 @@ import macros
 
 ####list_of_vehicle
 ### add time_incre at the end of this function
-'''
-def intersection_process(intersection, dic, list_of_vehicle):
-    if intersection.phase_dictionary[intersection.current_phase] > intersection.reference_dictionary[intersection.current_phase]:
-        intersection.phase_dictionary[intersection.current_phase] = 0
-
-        if intersection.current_phase + 1 > 6:
-            intersection.current_phase = 0
-
-        else:
-            intersection.current_phase = intersection.current_phase + 1
-
-    if intersection.current_phase == 1 or intersection.current_phase == 4:
-        print('meishi')
-'''
 
 
-def phase_change(intersection, action):
-    if action == 1:
+def phase_change(intersection):
+    if intersection.action == 1:
         if intersection.current_phase + 1 > macros.NSRED_EWYELLOW:
             intersection.current_phase = macros.NSGREEN_EWRED
 
         else:
             intersection.current_phase = intersection.current_phase + 1
-    action = 0
+        intersection.action = 0
 
 
 def process_one_lane(current_lane, current_inter, cars_list, signal):
@@ -42,7 +28,7 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
                  macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR].index(current_lane)
             side_lane = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
                          macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL][i]
-
+            change_lane()
             if not current_car.prev:
                 if current_car.speed < macros.CRUISE_SPEED:
                     current_car.acc = macros.ACCELERATION
@@ -267,74 +253,43 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
     return
 
 
-def change_lane(left_car_list,right_car_list, turn, car):
+def change_lane(side_lane, car):
     ##1 means turn left
     find_lagging_car = 0
-    if turn == macros.LEFT:
-        current_left = left_car_list
-        while current_left:
-            if current_left.position < car.position:
-                find_lagging_car = 1
-                lagging_car = current_left
-                if current_left.prev:
-                    leading_car = current_left.prev
-                    if (leading_car.position - lagging_car.position)/car.speed > macros.LEFT_GAP:
-                        car.prev.next = car.next
-                        car.next.prev = car.prev
-                        car.next = lagging_car
-                        lagging_car.prev = car
-                        car.prev = leading_car
-                        leading_car.next = car
-                    else:
-                        car.acc = macros.DECELERATION
-                else:
-                    current_left.prev = car
+    current_side_lane_car = side_lane
+    while current_side_lane_car:
+        if current_side_lane_car.position < car.position:
+            find_lagging_car = 1
+            lagging_car = current_side_lane_car
+            if current_side_lane_car.prev:
+                leading_car = current_side_lane_car.prev
+                if (leading_car.position - lagging_car.position)/car.speed > macros.CRITICAL_GAP:
                     car.prev.next = car.next
                     car.next.prev = car.prev
-                    car.next = current_left
-                break
-            if not current_left.next:
-                break
-            current_left = current_left.next
-
-
-        if find_lagging_car == 0:
-            car.prev.next = car.next
-            car.next.prev = car.prev
-            car.prev = current_left
-
-
-    if turn == macros.RIGHT:
-        current_right = right_car_list
-        while current_right.next :
-            if current_right.position < car.position:
-                find_lagging_car = 1
-                lagging_car = current_right
-                if current_right.prev:
-                    leading_car = current_right.prev
-                    if (leading_car.position - lagging_car.position)/car.speed > macros.LEFT_GAP:
-                        car.prev.next = car.next
-                        car.next.prev = car.prev
-                        car.next = lagging_car
-                        lagging_car.prev = car
-                        car.prev = leading_car
-                        leading_car.next = car
-                    else:
-                        car.acc = macros.DECELERATION
+                    car.next = lagging_car
+                    lagging_car.prev = car
+                    car.prev = leading_car
+                    leading_car.next = car
                 else:
-                    current_right.prev = car
-                    car.prev.next = car.next
-                    car.next.prev = car.prev
-                    car.next = current_right
-                break
-            if not current_right.next:
-                break
-            current_right = current_right.next
+                    car.acc = macros.DECELERATION
+            else:
+                current_side_lane_car.prev = car
+                car.prev.next = car.next
+                car.next.prev = car.prev
+                car.next = current_side_lane_car
+            break
+        if not current_side_lane_car.next:
+            break
+        current_side_lane_car = current_side_lane_car.next
 
-        if find_lagging_car == 0:
-            car.prev.next = car.next
-            car.next.prev = car.prev
-            car.prev = current_right
+
+    if find_lagging_car == 0:
+        car.prev.next = car.next
+        car.next.prev = car.prev
+        car.prev = current_side_lane_car
+
+
+
 
 
 
