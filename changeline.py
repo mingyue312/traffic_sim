@@ -37,8 +37,6 @@ def change_line(left_car_list,right_car_list, turn, car):
             car.prev = current_left
 
 
-
-
     if turn  == 2:
         current_right = right_car_list
         while current_right.next :
