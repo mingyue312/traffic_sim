@@ -42,3 +42,4 @@ def network_control(action):
 
 map_init.map_init()
 network_control(1)
+print('123')
