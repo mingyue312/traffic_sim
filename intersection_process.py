@@ -6,14 +6,19 @@ import map_init
 
 
 def phase_change(intersection, action):
-    if action == 1:
-        if intersection.current_phase in [macros.NSRED_EWYELLOW, macros.NSYELLOW_EWRED]:
-            if 
-            return 0
-        elif:
-            intersection.current_phase = intersection.current_phase + 1
+    if intersection.current_phase in [macros.NSRED_EWYELLOW, macros.NSYELLOW_EWRED]:
+        intersection.count_yellow += macros.TIME_INCREMENT
+        if intersection.count_yellow >= macros.YELLOW_PHASE:
+            intersection.count_yellow = 0
+            intersection.current_phase += 1
+        return 0
+    elif intersection.action == 1:
+        intersection.current_phase += 1
+        intersection.action = 0
+        return 1
     else:
         return 0
+
 
 
 def process_one_lane(current_lane, current_inter, cars_list, signal):
