@@ -1,17 +1,19 @@
 import macros
+import map_init
 
 ####list_of_vehicle
 ### add time_incre at the end of this function
 
 
-def phase_change(intersection):
-    if intersection.action == 1:
-        if intersection.current_phase + 1 > macros.NSRED_EWYELLOW:
-            intersection.current_phase = macros.NSGREEN_EWRED
-
-        else:
+def phase_change(intersection, action):
+    if action == 1:
+        if intersection.current_phase in [macros.NSRED_EWYELLOW, macros.NSYELLOW_EWRED]:
+            if 
+            return 0
+        elif:
             intersection.current_phase = intersection.current_phase + 1
-        intersection.action = 0
+    else:
+        return 0
 
 
 def process_one_lane(current_lane, current_inter, cars_list, signal):
@@ -294,5 +296,5 @@ def change_lane(side_lane, car):
 
 
 
-def intersection_process(intersection,action,):
-    phase_change(intersection,action)
+def intersection_process(inter,action,):
+    phase_change(map_init.intersections[inter],action)
