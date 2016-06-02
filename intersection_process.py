@@ -18,10 +18,10 @@ def intersection_process(intersection, dic, list_of_vehicle):
 '''
 
 
-def intersection_process(intersection, action):
+def phase_change(intersection, action):
     if action == 1:
-        if intersection.current_phase + 1 > 4:
-            intersection.current_phase = 0
+        if intersection.current_phase + 1 > macros.NSRED_EWYELLOW:
+            intersection.current_phase = macros.NSGREEN_EWRED
 
         else:
             intersection.current_phase = intersection.current_phase + 1
@@ -40,7 +40,9 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
     if signal == macros.NSGREEN_EWRED:
         while current_car:
             check_turn_and_change_lane(current_lane, current_inter, current_car)
-            change_lane()
+
+
+
             if current_car.prev == None:
                 if current_car.speed < macros.CRUISE_SPEED:
                     current_car.acc = macros.ACCELERATION
@@ -331,3 +333,9 @@ def change_lane(left_car_list, right_car_list, turn, car):
             car.prev.next = car.next
             car.next.prev = car.prev
             car.prev = current_right
+
+
+
+
+def intersection_process(intersection,action,):
+    phase_change(intersection,action)

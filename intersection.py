@@ -18,6 +18,7 @@ class Intersection:
         self.north_green = macros.GREEN_PHASE
         self.north_red = macros.RED_PHASE
         self.current_phase = 1
+        self.action = 0
 
 
 
