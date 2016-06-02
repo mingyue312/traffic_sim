@@ -34,16 +34,16 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
     '''
 
     current_car = cars_list
-    turn = macros.STRAIGHT   # status for turning, 0: need to go straight, -1: need to turn left, 1: need to turn right
-    change_lane = 0     # status for change lane, 0: don't need to change lane, 1: need to change lane
-
 
     if signal == macros.NSGREEN_EWRED:
         while current_car:
             check_turn_and_change_lane(current_lane, current_inter, current_car)
-            i = [].index(current_lane)
+            i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
+                 macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR].index(current_lane)
+            side_lane = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
+                         macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL][i]
 
-            if current_car.prev == None:
+            if not current_car.prev:
                 if current_car.speed < macros.CRUISE_SPEED:
                     current_car.acc = macros.ACCELERATION
                 else:
@@ -293,7 +293,7 @@ def change_lane(left_car_list,right_car_list, turn, car):
                     car.next.prev = car.prev
                     car.next = current_left
                 break
-            if current_left.next == None:
+            if not current_left.next:
                 break
             current_left = current_left.next
 
@@ -327,7 +327,7 @@ def change_lane(left_car_list,right_car_list, turn, car):
                     car.next.prev = car.prev
                     car.next = current_right
                 break
-            if current_right.next == None:
+            if not current_right.next:
                 break
             current_right = current_right.next
 
