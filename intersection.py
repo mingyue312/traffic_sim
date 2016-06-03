@@ -19,7 +19,7 @@ class Intersection:
         self.action = 0
         self.yellow = 2
         self.count_yellow = 0
-        self.coord = ()
+        self.coor = ()
 
 
 

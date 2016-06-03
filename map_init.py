@@ -14,14 +14,15 @@ def map_init():
                                                               macros.HOR_DIM[j-1], macros.HOR_DIM[j])
 
     for inter in intersections:
-        posx = macros.VER_DIM[0] + 2 * macros.LANE_WIDTH
-        posy = macros.HOR_DIM[0] + 2 * macros.LANE_WIDTH
-        for i in range(1, inter[0]):
+        posy = - macros.VER_DIM[0] - 2 * macros.LANE_WIDTH
+        posx = macros.HOR_DIM[0] + 2 * macros.LANE_WIDTH  # assume the top left corner is origin
+        for i in range(1, inter[1]):
             posx += macros.HOR_DIM[i]
-            posx += 2 * macros.LANE_WIDTH
-        for j in range(1, inter[1]):
-            posy += macros.VER_DIM[j]
-            posy += 2 * macros.LANE_WIDTH
+            posx += 4 * macros.LANE_WIDTH
+        for j in range(1, inter[0]):
+            posy -= macros.VER_DIM[j]
+            posy -= 4 * macros.LANE_WIDTH
+        intersections[inter].coor = (posx, posy)
 
     for inter_o in intersections:
         for inter_i in intersections:
@@ -62,5 +63,3 @@ def is_exit(inter, dir):
     if dir == macros.SOUTH and inter[0] == len(macros.VER_DIM)-1:
         return True
     return False
-
-map_init()
