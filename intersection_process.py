@@ -1,5 +1,6 @@
 import macros
 import map_init
+import car
 
 ####list_of_vehicle
 ### add time_incre at the end of this function
@@ -297,13 +298,13 @@ def turn_right(car,intersection,target_lane,target_inter):
 
 def get_needed_data(current_lane):
     if current_lane == macros.WESTL or current_lane == macros.WESTR:
-        return (macros.EASTL,macros.EASTR,"east_len",macros.SOUTHL,"south",macros.NORTHR,"north")
+        return (macros.EASTL,macros.EASTR,"east_len",macros.SOUTHL,"south",macros.NORTHR,"north","west_len")
     if current_lane == macros.EASTR or current_lane == macros.EASTL:
-        return (macros.WESTL,macros.WESTR,"west_len",macros.NORTHL,"west",macros.SOUTHR,"south")
+        return (macros.WESTL,macros.WESTR,"west_len",macros.NORTHL,"west",macros.SOUTHR,"south","east_len")
     if current_lane == macros.NORTHL or current_lane == macros.NORTHR:
-        return (macros.SOUTHL,macros.SOUTHR,"south_len",macros.WESTL,"south",macros.EASTR,"east")
+        return (macros.SOUTHL,macros.SOUTHR,"south_len",macros.WESTL,"south",macros.EASTR,"east","north_len")
     if current_lane == macros.SOUTHR or current_lane == macros.SOUTHL:
-        return (macros.NORTHL,macros.NORTHR,"north_len",macros.EASTL,"north",macros.WESTR,"west")
+        return (macros.NORTHL,macros.NORTHR,"north_len",macros.EASTL,"north",macros.WESTR,"west","south_len")
 
 def process_one_lane(current_lane, current_inter, cars_list, signal):
     '''
@@ -328,14 +329,24 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
                     current_car.change_lane = 0
                 else:
                     turn_left(current_car,opposite_left_lane,opposite_right_lane,current_inter,opposite_len,left_target_lane,left_target_intersection)
+
             if current_car.turn == macros.RIGHT:
                 if current_car.change_lane ==1:
                     change_lane(current_inter.cars_queue[side_lane],current_car)
                     current_car.change_lane = 0
                 else:
-                    turn_right(current_car)
+                    turn_right(current_car,current_inter,right_target_intersection,right_target_lane)
 
             current_car = current_car.next
 
+    if signal == macros.YELLOW:
+        (noneed,noneed,noneed,noneed,noneed,noneed,noneed,current_len) = get_needed_data(current_lane)
+        len = getattr(current_inter, current_len)
+
+        while current_car:
+            if current_car.location > len:
+                car_follow(current_car)
+            current_car = current_car.next
 
 def intersection_process(inter,action,):
+    return

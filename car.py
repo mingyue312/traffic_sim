@@ -31,12 +31,12 @@ class Car:
         self.my_path = path.find_path(self.initial_ent, self.final_exit)
 
 
-def get_position(position, speed, acceleration):
-    return position + speed * macros.TIME_INCREMENT + 0.5 * acceleration * macros.TIME_INCREMENT ** 2
+def get_position(car):
+     car.position = car.position+ car.speed * macros.TIME_INCREMENT + 0.5 * car.acc * macros.TIME_INCREMENT ** 2
 
 
-def get_speed(speed, acceleration):
-    return speed - acceleration*macros.TIME_INCREMENT
+def get_speed(car):
+     car.speed = car.speed + car.acc*macros.TIME_INCREMENT
 
 
 

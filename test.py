@@ -1,10 +1,3 @@
-class Intersection:
-    def __init__(self, north_len):
-        self.north_len = north_len
-
-inter = Intersection(10)
-
-a = "north_len"
-
-print (getattr(inter,a))
+(a,a,a) = (1,2,3)
+print(a)
 
