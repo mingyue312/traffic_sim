@@ -20,6 +20,7 @@ class Intersection:
         self.yellow = 2
         self.count_yellow = 0
         self.coor = ()
+        self.timer = 0.0  # timer keeps track of the time elapsed for current phase
 
 
 

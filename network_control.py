@@ -2,10 +2,10 @@ import map_init
 import random
 import car
 import macros
-#import intersection_process
+import intersection_process
 
 
-def network_control(action):
+def network_control():
     while macros.SIM_TIME <= macros.DURATION:
         for inter in map_init.intersections:
 
@@ -34,12 +34,44 @@ def network_control(action):
                     map_init.intersections[inter].boundary[enter_lane] = \
                         round(random.uniform(prev_arrival, prev_arrival + macros.FREQ), 2)
 
+            # this variable controls the phase of each intersection.
+            # -1: autonomous phase control, 1: change phase, 0: keep current phase
+            # if not autonomous, this signal should be produced by learning algorithm
+            action = -1
+
+            if action == -1:
+                if map_init.intersections[inter].current_phase in [macros.NSRED_EWYELLOW, macros.NSYELLOW_EWRED]:
+                    if map_init.intersections[inter].timer >= macros.YELLOW_PHASE:
+                        map_init.intersections.current_phase += 1
+                        if map_init.intersections.current_phase == 5:
+                            map_init.intersections.current_phase = 1
+                        map_init.intersections[inter].timer = 0
+                    map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
+                                                                macros.TIME_INCREMENT, 2)
+                elif map_init.intersections[inter].current_phase in [macros.NSRED_EWGREEN, macros.NSGREEN_EWRED]:
+                    if map_init.intersections[inter].timer >= macros.GREEN_PHASE:
+                        map_init.intersections.current_phase += 1
+                        if map_init.intersections.current_phase == 5:
+                            map_init.intersections.current_phase = 1
+                        map_init.intersections[inter].timer = 0
+                    map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
+                                                                macros.TIME_INCREMENT, 2)
+
+            elif action == 1:
+                map_init.intersections.current_phase += 1
+                if map_init.intersections.current_phase == 5:
+                    map_init.intersections.current_phase = 1
+                map_init.intersections[inter].timer = macros.TIME_INCREMENT
+
+            elif action == 0:
+                map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
+                                                            macros.TIME_INCREMENT, 2)
+
             # Following block processes each intersection's car movements:
-            # intersection_process.intersection_process(map_init.intersections[inter], action)
+            intersection_process.intersection_process(map_init.intersections[inter])
 
         macros.SIM_TIME = round(macros.SIM_TIME + macros.TIME_INCREMENT, 2)
 
 
 map_init.map_init()
-network_control(1)
-print('123')
+network_control(-1)
