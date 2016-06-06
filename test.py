@@ -1,6 +1,10 @@
-def yes():
-    return (1,2)
+class Intersection:
+    def __init__(self, north_len):
+        self.north_len = north_len
 
-(a,b) = yes()
+inter = Intersection(10)
 
-print(a)
+a = "north_len"
+
+print (getattr(inter,a))
+

@@ -5,19 +5,6 @@ import map_init
 ### add time_incre at the end of this function
 
 
-def phase_change(intersection, action):
-    if intersection.current_phase in [macros.NSRED_EWYELLOW, macros.NSYELLOW_EWRED]:
-        intersection.count_yellow += macros.TIME_INCREMENT
-        if intersection.count_yellow >= macros.YELLOW_PHASE:
-            intersection.count_yellow = 0
-            intersection.current_phase += 1
-        return 0
-    elif intersection.action == 1:
-        intersection.current_phase += 1
-        intersection.action = 0
-        return 1
-    else:
-        return 0
 
 def check_turn_and_change_lane(current_lane, current_inter, current_car):
     '''
@@ -235,7 +222,7 @@ def car_follow(current_car):
              current_car.acc = 0
          else:
              if current_car.speed < macros.CRUISE_SPEED:
-                 current_car.acc = macros.ACCELERATION
+                current_car.acc = macros.ACCELERATION
              else:
                  current_car.speed = macros.CRUISE_SPEED
                  current_car.acc = 0
@@ -275,25 +262,48 @@ def change_lane(side_lane, car):
         car.next.prev = car.prev
         car.prev = current_side_lane_car
 
+def append(link_list,target):
+    current = link_list
+    if current:
+        while current.next != None:
+            current = current.next
+        current.next = target
+    else:
+        link_list = target
 
-def turn_left(car,opposite_left_lane,opposite_right_lane,intersection):
+
+def turn_left(car,opposite_left_lane,opposite_right_lane,intersection,opposite_len,target_lane,target_inter):
+    len = getattr(intersection,opposite_len)
+    opposite_left_car = intersection.cars_queue[opposite_left_lane]
+    opposite_right_car = intersection.cars_queue[opposite_right_lane]
+    target_intersection = getattr(intersection,target_inter)
+
     if car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT:
         car.acc = car.speed^2/(2*car.position)
     if car.position <= macros.OBSERVE_DISTANCE:
-        if intersection(opposite_left_lane)
+        if((len + 6 - opposite_left_car.location)/opposite_left_car.speed >= 2 or \
+        (opposite_left_car.location >= len + 6 and (opposite_left_car.location - opposite_left_car.next.location)/opposite_left_car.next.speed >=2)) and\
+        ((len + 6 - opposite_right_car.location)/opposite_right_car.speed >= 3 or \
+        (opposite_right_car.location >= len + 6 and (opposite_right_car.location - opposite_right_car.next.location)/opposite_right_car.next.speed >=3)):
+            append(target_intersection.cars_queue[target_lane],car)
+            car.next.prev = None
     return
 
-def turn_right():
+def turn_right(car,intersection,target_lane,target_inter):
+    target_intersection = getattr(intersection,target_inter)
+    car.next.prev = None
+    append(target_intersection.cars_queue[target_lane],car)
     return
-def get_opposite_lanes(current_lane):
+
+def get_needed_data(current_lane):
     if current_lane == macros.WESTL or current_lane == macros.WESTR:
-        return (macros.EASTL,macros.EASTR)
+        return (macros.EASTL,macros.EASTR,"east_len",macros.SOUTHL,"south",macros.NORTHR,"north")
     if current_lane == macros.EASTR or current_lane == macros.EASTL:
-        return (macros.WESTL,macros.WESTR)
+        return (macros.WESTL,macros.WESTR,"west_len",macros.NORTHL,"west",macros.SOUTHR,"south")
     if current_lane == macros.NORTHL or current_lane == macros.NORTHR:
-        return (macros.SOUTHL,macros.SOUTHR)
+        return (macros.SOUTHL,macros.SOUTHR,"south_len",macros.WESTL,"south",macros.EASTR,"east")
     if current_lane == macros.SOUTHR or current_lane == macros.SOUTHL:
-        return (macros.NORTHL,macros.NORTHR)
+        return (macros.NORTHL,macros.NORTHR,"north_len",macros.EASTL,"north",macros.WESTR,"west")
 
 def process_one_lane(current_lane, current_inter, cars_list, signal):
     '''
@@ -309,7 +319,7 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
                  macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR].index(current_lane)
             side_lane = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
                          macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL][i]
-            (opposite_left_lane,opposite_right_lane) = get_opposite_lanes(current_lane)
+            (opposite_left_lane,opposite_right_lane,opposite_len,left_target_lane,left_target_intersection,right_target_lane,right_target_intersection) = get_needed_data(current_lane)
 
             car_follow(current_car)
             if current_car.turn == macros.LEFT:
@@ -317,7 +327,7 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
                     change_lane(current_inter.cars_queue[side_lane],current_car)
                     current_car.change_lane = 0
                 else:
-                    turn_left(current_car,opposite_left_lane,opposite_right_lane)
+                    turn_left(current_car,opposite_left_lane,opposite_right_lane,current_inter,opposite_len,left_target_lane,left_target_intersection)
             if current_car.turn == macros.RIGHT:
                 if current_car.change_lane ==1:
                     change_lane(current_inter.cars_queue[side_lane],current_car)
@@ -329,4 +339,3 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
 
 
 def intersection_process(inter,action,):
-    phase_change(map_init.intersections[inter],action)
