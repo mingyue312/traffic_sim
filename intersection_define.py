@@ -22,7 +22,14 @@ class Intersection:
         self.coor = ()
         self.timer = 0.0  # timer keeps track of the time elapsed for current phase
 
-
+    def append(self, lane,target):
+        current = self.cars_queue[lane]
+        if current:
+           while current.next != None:
+               current = current.next
+           current.next = target
+        else:
+            self.cars_queue[lane] = target
 
 
 
