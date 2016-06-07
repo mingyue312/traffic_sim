@@ -1,6 +1,6 @@
 import macros
-import car
-import intersection
+import car_define
+import intersection_define
 
 ####list_of_vehicle
 ### add time_incre at the end of this function
@@ -264,19 +264,20 @@ def change_lane(side_lane, car):
         car.prev = current_side_lane_car
 
 
-def turn_left(car,opposite_left_lane,opposite_right_lane,intersection,opposite_len,target_lane,target_inter):
-    len = getattr(intersection,opposite_len)
+def turn_left(car,opposite_left_lane,opposite_right_lane,intersection,opposite_len,target_lane,target_inter,current_length):
+    opposite_len = getattr(intersection,opposite_len)
+
     opposite_left_car = intersection.cars_queue[opposite_left_lane]
     opposite_right_car = intersection.cars_queue[opposite_right_lane]
     target_intersection = getattr(intersection,target_inter)
 
     if car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT:
-        car.acc = car.speed^2/(2*car.position)
+        car.acc = car.speed^2/(2*(current_length-car.position))
     if car.position <= macros.OBSERVE_DISTANCE:
-        if((len + 6 - opposite_left_car.location)/opposite_left_car.speed >= 2 or \
-        (opposite_left_car.location >= len + 6 and (opposite_left_car.location - opposite_left_car.next.location)/opposite_left_car.next.speed >=2)) and\
-        ((len + 6 - opposite_right_car.location)/opposite_right_car.speed >= 3 or \
-        (opposite_right_car.location >= len + 6 and (opposite_right_car.location - opposite_right_car.next.location)/opposite_right_car.next.speed >=3)):
+        if((opposite_len + 6 - opposite_left_car.location)/opposite_left_car.speed >= 2 or
+        (opposite_left_car.location >= opposite_len + 6 and (opposite_left_car.location - opposite_left_car.next.location)/opposite_left_car.next.speed >=2)) and\
+        ((opposite_len + 6 - opposite_right_car.location)/opposite_right_car.speed >= 3 or
+        (opposite_right_car.location >= opposite_len + 6 and (opposite_right_car.location - opposite_right_car.next.location)/opposite_right_car.next.speed >=3)):
             target_intersection.append(target_lane,car)
             car.next.prev = None
     return
@@ -284,7 +285,7 @@ def turn_left(car,opposite_left_lane,opposite_right_lane,intersection,opposite_l
 def turn_right(car,intersection,target_lane,target_inter):
     target_intersection = getattr(intersection,target_inter)
     car.next.prev = None
-    append(target_intersection.cars_queue[target_lane],car)
+    target_intersection.append(target_lane,car)
     return
 
 def get_needed_data(current_lane):
@@ -297,12 +298,12 @@ def get_needed_data(current_lane):
     if current_lane == macros.SOUTHR or current_lane == macros.SOUTHL:
         return (macros.NORTHL,macros.NORTHR,"north_len",macros.EASTL,"north",macros.WESTR,"west","south_len","north")
 
-def process_one_lane(current_lane, current_inter, cars_list, signal):
+def process_one_lane(current_lane, current_inter, signal):
     '''
     process one lane, given the signal
     '''
 
-    current_car = cars_list
+    current_car = current_inter.cars_queue[current_lane]
     (opposite_left_lane,opposite_right_lane,opposite_len,left_target_lane,left_target_intersection,right_target_lane,right_target_intersection,current_len,straight_target) = get_needed_data(current_lane)
     current_length = getattr(current_inter, current_len)
 
@@ -320,7 +321,7 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
                     change_lane(current_inter.cars_queue[side_lane],current_car)
                     current_car.change_lane = 0
                 else:
-                    turn_left(current_car,opposite_left_lane,opposite_right_lane,current_inter,opposite_len,left_target_lane,left_target_intersection)
+                    turn_left(current_car,opposite_left_lane,opposite_right_lane,current_inter,opposite_len,left_target_lane,left_target_intersection,current_length)
 
             if current_car.turn == macros.RIGHT:
                 if current_car.change_lane ==1:
@@ -329,22 +330,53 @@ def process_one_lane(current_lane, current_inter, cars_list, signal):
                 else:
                     turn_right(current_car,current_inter,right_target_intersection,right_target_lane)
 
-            car.get_speed(current_car)
-            car.get_position(current_car)
+            car_define.get_speed(current_car)
+            car_define.get_position(current_car)
+
             if current_car.position >= current_length +12:
                 straight_target_inter = getattr(current_inter,straight_target)
-
+                straight_target_inter.append(current_lane,current_car)
+                current_car.next.prev = None
             current_car = current_car.next
 
     elif signal == macros.YELLOW:
 
         while current_car:
-            if current_car.location > len:
+            if current_car.location > current_length:
                 car_follow(current_car)
 
             else:
+                if current_car.prev.position > current_length or current_car.prev == None:
+                    current_car.acc = current_car.speed^2/(2*(current_length-current_car.position))
+                else:
+                    current_car.acc = current_car.speed^2/(2*(current_car.prev.position - macros.LENGTHE_CAR - current_car.position))
+
+            car_define.get_speed(current_car)
+            car_define.get_position(current_car)
 
             current_car = current_car.next
 
-def intersection_process(inter,action,):
+    elif signal  == macros.RED:
+
+        while current_car:
+            if current_car.prev == None:
+                current_car.acc = current_car.speed^2/(2*(current_length-current_car.position))
+            else:
+                current_car.acc = current_car.speed^2/(2*(current_car.prev.position - macros.LENGTHE_CAR - current_car.position))
+
+            car_define.get_speed(current_car)
+            car_define.get_position(current_car)
+            current_car = current_car.next
+
+def intersection_process(inter,current_phase):
+    dic_NSGREEN_EWRED = {macros.WESTL:macros.RED, macros.WESTR:macros.RED,macros.EASTL:macros.RED,macros.EASTR:macros.RED,macros.NORTHL:macros.GREEN,macros.NORTHR:macros.GREEN,macros.SOUTHR:macros.GREEN,macros.SOUTHL:macros.GREEN}
+    dic_NSYELLOW_EWRED = {macros.WESTL:macros.RED, macros.WESTR:macros.RED,macros.EASTL:macros.RED,macros.EASTR:macros.RED,macros.NORTHL:macros.YELLOW,macros.NORTHR:macros.YELLOW,macros.SOUTHR:macros.YELLOW,macros.SOUTHL:macros.YELLOW}
+    dic_NSRED_EWGREEN = {macros.WESTL:macros.GREEN, macros.WESTR:macros.GREEN,macros.EASTL:macros.GREEN,macros.EASTR:macros.GREEN,macros.NORTHL:macros.RED,macros.NORTHR:macros.RED,macros.SOUTHR:macros.RED,macros.SOUTHL:macros.RED}
+    dic_NSRED_EWYELLOW = {macros.WESTL:macros.YELLOW, macros.WESTR:macros.YELLOW,macros.EASTL:macros.YELLOW,macros.EASTR:macros.YELLOW,macros.NORTHL:macros.RED,macros.NORTHR:macros.RED,macros.SOUTHR:macros.RED,macros.SOUTHL:macros.RED}
+    dic = {macros.NSGREEN_EWRED:dic_NSGREEN_EWRED,macros.NSYELLOW_EWRED:dic_NSYELLOW_EWRED,macros.NSRED_EWGREEN:dic_NSRED_EWGREEN,macros.NSRED_EWYELLOW:dic_NSRED_EWYELLOW}
+    for i in range(1,9):
+
+        signal = dic[current_phase][i]
+        process_one_lane(i,inter,signal)
     return
+
