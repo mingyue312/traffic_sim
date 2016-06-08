@@ -166,6 +166,6 @@ def draw_hor_street(pos, length):
         sign *= -1
 
 
-map_init.map_init()
-draw_map()
-screen.mainloop()
+#map_init.map_init()
+#draw_map()
+#screen.mainloop()

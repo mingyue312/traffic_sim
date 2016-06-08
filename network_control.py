@@ -3,6 +3,7 @@ import random
 import car_define
 import macros
 import intersection_process
+import visualization
 
 
 def network_control():
@@ -70,9 +71,11 @@ def network_control():
 
             # Following block processes each intersection's car movements:
             intersection_process.intersection_process(map_init.intersections[inter])
+            visualization.draw_cars()
 
         macros.SIM_TIME = round(macros.SIM_TIME + macros.TIME_INCREMENT, 2)
 
 
 map_init.map_init()
+visualization.draw_map()
 network_control(-1)
