@@ -1,5 +1,4 @@
 import map_init
-import car
 import macros
 import turtle
 

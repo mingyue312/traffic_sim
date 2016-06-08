@@ -1,6 +1,6 @@
 import map_init
 import random
-import car
+import car_define
 import macros
 import intersection_process
 
@@ -20,7 +20,7 @@ def network_control():
                         direction = macros.NORTH
                     else:
                         direction = macros.SOUTH
-                    new_car = car.Car(inter, direction, macros.INITSPEED)
+                    new_car = car_define.Car(inter, direction, macros.INITSPEED)
                     if not map_init.intersections[inter].cars_queue[enter_lane]:
                         map_init.intersections[inter].cars_queue[enter_lane] = new_car
                     else:
@@ -37,6 +37,7 @@ def network_control():
             # this variable controls the phase of each intersection.
             # -1: autonomous phase control, 1: change phase, 0: keep current phase
             # if not autonomous, this signal should be produced by learning algorithm
+
             action = -1
 
             if action == -1:

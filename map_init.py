@@ -1,4 +1,4 @@
-import intersection
+import intersection_define
 import macros
 import random
 intersections = {}
@@ -10,8 +10,8 @@ def map_init():
     """
     for i in range(1, len(macros.VER_DIM)):
         for j in range(1, len(macros.HOR_DIM)):
-            intersections[(i, j)] = intersection.Intersection((i, j), macros.VER_DIM[i-1], macros.VER_DIM[i],
-                                                              macros.HOR_DIM[j-1], macros.HOR_DIM[j])
+            intersections[(i, j)] = intersection_define.Intersection((i, j), macros.VER_DIM[i-1], macros.VER_DIM[i],
+                                                                     macros.HOR_DIM[j-1], macros.HOR_DIM[j])
 
     for inter in intersections:
         posy = - macros.VER_DIM[0] - 2 * macros.LANE_WIDTH
