@@ -368,7 +368,7 @@ def process_one_lane(current_lane, current_inter, signal):
             car_define.get_position(current_car)
             current_car = current_car.next
 
-def intersection_process(inter,current_phase):
+def intersection_process(inter):
     dic_NSGREEN_EWRED = {macros.WESTL:macros.RED, macros.WESTR:macros.RED,macros.EASTL:macros.RED,macros.EASTR:macros.RED,macros.NORTHL:macros.GREEN,macros.NORTHR:macros.GREEN,macros.SOUTHR:macros.GREEN,macros.SOUTHL:macros.GREEN}
     dic_NSYELLOW_EWRED = {macros.WESTL:macros.RED, macros.WESTR:macros.RED,macros.EASTL:macros.RED,macros.EASTR:macros.RED,macros.NORTHL:macros.YELLOW,macros.NORTHR:macros.YELLOW,macros.SOUTHR:macros.YELLOW,macros.SOUTHL:macros.YELLOW}
     dic_NSRED_EWGREEN = {macros.WESTL:macros.GREEN, macros.WESTR:macros.GREEN,macros.EASTL:macros.GREEN,macros.EASTR:macros.GREEN,macros.NORTHL:macros.RED,macros.NORTHR:macros.RED,macros.SOUTHR:macros.RED,macros.SOUTHL:macros.RED}
@@ -376,7 +376,7 @@ def intersection_process(inter,current_phase):
     dic = {macros.NSGREEN_EWRED:dic_NSGREEN_EWRED,macros.NSYELLOW_EWRED:dic_NSYELLOW_EWRED,macros.NSRED_EWGREEN:dic_NSRED_EWGREEN,macros.NSRED_EWYELLOW:dic_NSRED_EWYELLOW}
     for i in range(1,9):
 
-        signal = dic[current_phase][i]
+        signal = dic[inter.current_phase][i]
         process_one_lane(i,inter,signal)
     return
 
