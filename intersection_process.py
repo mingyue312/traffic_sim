@@ -261,7 +261,7 @@ def change_lane(side_lane_num, car, inter, current_lane):
                             leading_car.next = car
                     else:
                         if not car.next:
-                            car.prev.next = car.next
+                            car.prev.next = None
                             car.next = lagging_car
                             lagging_car.prev = car
                             car.prev = leading_car
@@ -347,7 +347,7 @@ def change_lane(side_lane_num, car, inter, current_lane):
                     car.prev = current_side_lane_car
             else:
                 if not car.next:
-                    car.prev.next = car.next
+                    car.prev.next = None
                     current_side_lane_car.next = car
                     car.prev = current_side_lane_car
                 else:
@@ -355,6 +355,8 @@ def change_lane(side_lane_num, car, inter, current_lane):
                     car.next.prev = car.prev
                     current_side_lane_car.next = car
                     car.prev = current_side_lane_car
+                    car.next = None
+
 
 
 def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposite_len, target_lane, target_inter,
