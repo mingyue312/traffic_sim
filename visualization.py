@@ -14,12 +14,12 @@ car_dot.ht()
 
 
 def draw_map():
-    tot_width = sum(macros.HOR_DIM) + 4 * macros.LANE_WIDTH * (len(macros.HOR_DIM) - 1)
-    tot_height = sum(macros.VER_DIM) + 4 * macros.LANE_WIDTH * (len(macros.VER_DIM) - 1)
+    tot_width = (sum(macros.HOR_DIM) + 4 * macros.LANE_WIDTH * (len(macros.HOR_DIM) - 1))
+    tot_height = (sum(macros.VER_DIM) + 4 * macros.LANE_WIDTH * (len(macros.VER_DIM) - 1))
     for i in range(1, len(macros.HOR_DIM)):
-        draw_ver_street(map_init.intersections[(1, i)].coor[0], tot_height)
+        draw_ver_street((map_init.intersections[(1, i)].coor[0]) * macros.SCALE, tot_height * macros.SCALE)
     for i in range(1, len(macros.VER_DIM)):
-        draw_hor_street(map_init.intersections[(i, 1)].coor[1], tot_width)
+        draw_hor_street((map_init.intersections[(i, 1)].coor[1]) * macros.SCALE, tot_width * macros.SCALE)
     return
 
 
@@ -36,49 +36,49 @@ def draw_cars():
         # draw cars from each of the 8 lanes
         current_car = map_init.intersections[inter].cars_queue[macros.WESTL]
         while current_car:
-            car_dot.setpos(interx - 6 - wl + current_car.location, intery - 1.5)
+            car_dot.setpos((interx - 6 - wl + current_car.position) * macros.SCALE, (intery - 1.5) * macros.SCALE)
             car_dot.dot(2, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.WESTR]
         while current_car:
-            car_dot.setpos(interx - 6 - wl + current_car.location, intery - 4.5)
+            car_dot.setpos((interx - 6 - wl + current_car.position) * macros.SCALE, (intery - 4.5) * macros.SCALE)
             car_dot.dot(2, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.EASTL]
         while current_car:
-            car_dot.setpos(interx + 6 + el - current_car.location, intery + 1.5)
+            car_dot.setpos((interx + 6 + el - current_car.position) * macros.SCALE, (intery + 1.5) * macros.SCALE)
             car_dot.dot(2, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.EASTR]
         while current_car:
-            car_dot.setpos(interx + 6 + el - current_car.location, intery + 4.5)
+            car_dot.setpos((interx + 6 + el - current_car.position) * macros.SCALE, (intery + 4.5) * macros.SCALE)
             car_dot.dot(2, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.NORTHL]
         while current_car:
-            car_dot.setpos(interx - 1.5, intery + 6 + nl - current_car.location)
+            car_dot.setpos((interx - 1.5) * macros.SCALE, (intery + 6 + nl - current_car.position) * macros.SCALE)
             car_dot.dot(2, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.NORTHR]
         while current_car:
-            car_dot.setpos(interx - 4.5, intery + 6 + nl - current_car.location)
+            car_dot.setpos((interx - 4.5) * macros.SCALE, (intery + 6 + nl - current_car.position) * macros.SCALE)
             car_dot.dot(2, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.SOUTHL]
         while current_car:
-            car_dot.setpos(interx + 1.5, intery - 6 - sl + current_car.location)
+            car_dot.setpos((interx + 1.5) * macros.SCALE, (intery - 6 - sl + current_car.position) * macros.SCALE)
             car_dot.dot(2, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.SOUTHR]
         while current_car:
-            car_dot.setpos(interx + 4.5, intery - 6 - sl + current_car.location)
+            car_dot.setpos((interx + 4.5) * macros.SCALE, (intery - 6 - sl + current_car.position) * macros.SCALE)
             car_dot.dot(2, "red")
             current_car = current_car.next
 
@@ -93,19 +93,19 @@ def draw_ver_street(pos, length):
     board.forward(length)
     board.pu()
 
-    board.setpos(pos + 6, 0)
+    board.setpos(pos + 6 * macros.SCALE, 0)
     board.seth(270)
     board.pd()
     board.forward(length)
     board.pu()
 
-    board.setpos(pos - 6, 0)
+    board.setpos(pos - 6 * macros.SCALE, 0)
     board.seth(270)
     board.pd()
     board.forward(length)
     board.pu()
 
-    board.setpos(pos + 3, 0)
+    board.setpos(pos + 3 * macros.SCALE, 0)
     board.seth(270)
     sign = 1
     while board.ycor() > (-length):
@@ -115,7 +115,7 @@ def draw_ver_street(pos, length):
         board.pu()
         sign *= -1
 
-    board.setpos(pos - 3, 0)
+    board.setpos(pos - 3 * macros.SCALE, 0)
     board.seth(270)
     sign = 1
     while board.ycor() > (-length):
@@ -133,19 +133,19 @@ def draw_hor_street(pos, length):
     board.forward(length)
     board.pu()
 
-    board.setpos(0, pos + 6)
+    board.setpos(0, pos + 6 * macros.SCALE)
     board.seth(0)
     board.pd()
     board.forward(length)
     board.pu()
 
-    board.setpos(0, pos - 6)
+    board.setpos(0, pos - 6 * macros.SCALE)
     board.seth(0)
     board.pd()
     board.forward(length)
     board.pu()
 
-    board.setpos(0, pos + 3)
+    board.setpos(0, pos + 3 * macros.SCALE)
     board.seth(0)
     sign = 1
     while board.xcor() < (length-1):
@@ -155,7 +155,7 @@ def draw_hor_street(pos, length):
         board.pu()
         sign *= -1
 
-    board.setpos(0, pos - 3)
+    board.setpos(0, pos - 3 * macros.SCALE)
     board.seth(0)
     sign = 1
     while board.xcor() < (length-1):

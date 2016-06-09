@@ -1,7 +1,7 @@
-CRITICAL_GAP = 4.85
+CRITICAL_GAP = 1.5
 DURATION = 3
-HOR_DIM = [311, 312, 313, 314]
-VER_DIM = [315, 316, 317, 318, 319]
+HOR_DIM = [100, 150]
+VER_DIM = [150, 200]
 LANE_WIDTH = 3
 
 STRAIGHT = 0
@@ -22,7 +22,7 @@ NORTHR = 6
 SOUTHL = 7
 SOUTHR = 8
 INITSPEED = 15      #initial entering speed of 15 m/s
-FREQ = 1            #shorter = more frequent car entering
+FREQ = 5            #shorter = more frequent car entering
 
 NSGREEN_EWRED = 1
 NSYELLOW_EWRED = 2
@@ -39,7 +39,7 @@ YELLOW_PHASE = 2
 CLEAR_PHASE = 1
 
 NUMBER_ARRIVAL = 5
-TIME_INCREMENT = 0.01
+TIME_INCREMENT = 0.1
 SIM_TIME = 0
 
 SAFE_DIST = 6
@@ -50,3 +50,4 @@ DECELERATION = -10
 DISTANCE_FROM_TRAFFIC_LIGHT = 10
 OBSERVE_DISTANCE = 3
 LENGTHE_CAR = 3
+SCALE = 2

@@ -33,7 +33,7 @@ def network_control():
                     # get next arrival time and save it to each lanes of each intersection
                     prev_arrival = map_init.intersections[inter].boundary[enter_lane]
                     map_init.intersections[inter].boundary[enter_lane] = \
-                        round(random.uniform(prev_arrival, prev_arrival + macros.FREQ), 2)
+                        round(random.uniform(prev_arrival, prev_arrival + macros.FREQ), 1)
 
             # this variable controls the phase of each intersection.
             # -1: autonomous phase control, 1: change phase, 0: keep current phase
@@ -49,7 +49,7 @@ def network_control():
                             map_init.intersections.current_phase = 1
                         map_init.intersections[inter].timer = 0
                     map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
-                                                                macros.TIME_INCREMENT, 2)
+                                                                macros.TIME_INCREMENT, 1)
                 elif map_init.intersections[inter].current_phase in [macros.NSRED_EWGREEN, macros.NSGREEN_EWRED]:
                     if map_init.intersections[inter].timer >= macros.GREEN_PHASE:
                         map_init.intersections.current_phase += 1
@@ -57,7 +57,7 @@ def network_control():
                             map_init.intersections.current_phase = 1
                         map_init.intersections[inter].timer = 0
                     map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
-                                                                macros.TIME_INCREMENT, 2)
+                                                                macros.TIME_INCREMENT, 1)
 
             elif action == 1:
                 map_init.intersections.current_phase += 1
@@ -67,15 +67,15 @@ def network_control():
 
             elif action == 0:
                 map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
-                                                            macros.TIME_INCREMENT, 2)
+                                                            macros.TIME_INCREMENT, 1)
 
             # Following block processes each intersection's car movements:
-            intersection_process.intersection_process(map_init.intersections[inter])
+            intersection_process.intersection_process(inter)
             visualization.draw_cars()
 
-        macros.SIM_TIME = round(macros.SIM_TIME + macros.TIME_INCREMENT, 2)
+        macros.SIM_TIME = round(macros.SIM_TIME + macros.TIME_INCREMENT, 1)
 
 
 map_init.map_init()
 visualization.draw_map()
-network_control(-1)
+network_control()

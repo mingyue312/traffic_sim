@@ -38,28 +38,28 @@ def map_init():
     # TODO: update for exponential arrival time
     for inter in intersections:
         if not intersections[inter].east:
-            intersections[inter].boundary[macros.EASTL] = round(random.uniform(0, macros.FREQ), 2)
-            intersections[inter].boundary[macros.EASTR] = round(random.uniform(0, macros.FREQ), 2)
+            intersections[inter].boundary[macros.EASTL] = round(random.uniform(0, macros.FREQ), 1)
+            intersections[inter].boundary[macros.EASTR] = round(random.uniform(0, macros.FREQ), 1)
         if not intersections[inter].west:
-            intersections[inter].boundary[macros.WESTL] = round(random.uniform(0, macros.FREQ), 2)
-            intersections[inter].boundary[macros.WESTR] = round(random.uniform(0, macros.FREQ), 2)
+            intersections[inter].boundary[macros.WESTL] = round(random.uniform(0, macros.FREQ), 1)
+            intersections[inter].boundary[macros.WESTR] = round(random.uniform(0, macros.FREQ), 1)
         if not intersections[inter].north:
-            intersections[inter].boundary[macros.NORTHL] = round(random.uniform(0, macros.FREQ), 2)
-            intersections[inter].boundary[macros.NORTHR] = round(random.uniform(0, macros.FREQ), 2)
+            intersections[inter].boundary[macros.NORTHL] = round(random.uniform(0, macros.FREQ), 1)
+            intersections[inter].boundary[macros.NORTHR] = round(random.uniform(0, macros.FREQ), 1)
         if not intersections[inter].south:
-            intersections[inter].boundary[macros.SOUTHL] = round(random.uniform(0, macros.FREQ), 2)
-            intersections[inter].boundary[macros.SOUTHR] = round(random.uniform(0, macros.FREQ), 2)
+            intersections[inter].boundary[macros.SOUTHL] = round(random.uniform(0, macros.FREQ), 1)
+            intersections[inter].boundary[macros.SOUTHR] = round(random.uniform(0, macros.FREQ), 1)
 
     return intersections
 
 
-def is_exit(inter, dir):
-    if dir == macros.WEST and inter[1] == 1:
+def is_exit(inter, direction):
+    if direction == macros.WEST and inter[1] == 1:
         return True
-    if dir == macros.EAST and inter[1] == len(macros.HOR_DIM)-1:
+    if direction == macros.EAST and inter[1] == len(macros.HOR_DIM)-1:
         return True
-    if dir == macros.NORTH and inter[0] == 1:
+    if direction == macros.NORTH and inter[0] == 1:
         return True
-    if dir == macros.SOUTH and inter[0] == len(macros.VER_DIM)-1:
+    if direction == macros.SOUTH and inter[0] == len(macros.VER_DIM)-1:
         return True
     return False

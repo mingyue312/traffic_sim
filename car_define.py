@@ -16,14 +16,14 @@ class Car:
         self.dist_to_front = 0
         self.next = None
         self.prev = None
-        self.location = 0
+        self.position = 0
         self.turn = macros.STRAIGHT
         self.change_lane = 0
 
         # TODO: could make this random process faster
         while True:
             self.final_exit = (random.randint(1, len(macros.VER_DIM)-1), random.randint(1, len(macros.HOR_DIM)-1))
-            self.final_dir = random.randint(1,4)
+            self.final_dir = random.randint(1, 4)
             if map_init.is_exit(self.final_exit, self.final_dir) and \
                     (self.final_exit != self.initial_ent or self.final_dir != self.initial_dir):
                 break
@@ -32,11 +32,11 @@ class Car:
 
 
 def get_position(car):
-     car.position = car.position+ car.speed * macros.TIME_INCREMENT + 0.5 * car.acc * macros.TIME_INCREMENT ** 2
+    car.position = car.position + car.speed * macros.TIME_INCREMENT + 0.5 * car.acc * macros.TIME_INCREMENT ** 2
 
 
 def get_speed(car):
-     car.speed = car.speed + car.acc*macros.TIME_INCREMENT
+    car.speed += car.acc * macros.TIME_INCREMENT
 
 
 
