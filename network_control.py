@@ -44,17 +44,17 @@ def network_control():
             if action == -1:
                 if map_init.intersections[inter].current_phase in [macros.NSRED_EWYELLOW, macros.NSYELLOW_EWRED]:
                     if map_init.intersections[inter].timer >= macros.YELLOW_PHASE:
-                        map_init.intersections.current_phase += 1
-                        if map_init.intersections.current_phase == 5:
-                            map_init.intersections.current_phase = 1
+                        map_init.intersections[inter].current_phase += 1
+                        if map_init.intersections[inter].current_phase == 5:
+                            map_init.intersections[inter].current_phase = 1
                         map_init.intersections[inter].timer = 0
                     map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
                                                                 macros.TIME_INCREMENT, 1)
                 elif map_init.intersections[inter].current_phase in [macros.NSRED_EWGREEN, macros.NSGREEN_EWRED]:
                     if map_init.intersections[inter].timer >= macros.GREEN_PHASE:
-                        map_init.intersections.current_phase += 1
-                        if map_init.intersections.current_phase == 5:
-                            map_init.intersections.current_phase = 1
+                        map_init.intersections[inter].current_phase += 1
+                        if map_init.intersections[inter].current_phase == 5:
+                            map_init.intersections[inter].current_phase = 1
                         map_init.intersections[inter].timer = 0
                     map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
                                                                 macros.TIME_INCREMENT, 1)
