@@ -39,6 +39,7 @@ def get_speed(car):
     car.speed += car.acc * macros.TIME_INCREMENT
     if car.speed <= 0:
         car.speed = 0
+        car.acc = 0
 
 
 

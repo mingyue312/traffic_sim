@@ -22,7 +22,7 @@ NORTHR = 6
 SOUTHL = 7
 SOUTHR = 8
 INITSPEED = 15      #initial entering speed of 15 m/s
-FREQ = 5            #shorter = more frequent car entering
+FREQ = 3            #shorter = more frequent car entering
 
 NSGREEN_EWRED = 1
 NSYELLOW_EWRED = 2
@@ -39,10 +39,10 @@ YELLOW_PHASE = 2
 CLEAR_PHASE = 1
 
 NUMBER_ARRIVAL = 5
-TIME_INCREMENT = 0.1
+TIME_INCREMENT = 0.2
 SIM_TIME = 0
 
-SAFE_DIST = 6
+SAFE_DIST = 8
 CRUISE_SPEED = 15
 ACCELERATION = 10
 DECELERATION = -10
