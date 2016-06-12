@@ -6,11 +6,15 @@ screen = turtle.Screen()
 screen.setworldcoordinates(-100, -800, 800, 100)
 board = turtle.Turtle()
 board.ht()
+board.speed(0)
 board.pu()
 board.setposition(0, 0)
-board.speed(0)
 car_dot = turtle.Turtle()
 car_dot.ht()
+car_dot.speed(0)
+signal = turtle.Turtle()
+signal.ht()
+signal.speed(0)
 
 
 def draw_map():
@@ -81,8 +85,51 @@ def draw_cars():
             car_dot.setpos((interx + 4.5) * macros.SCALE, (intery - 6 - sl + current_car.position) * macros.SCALE)
             car_dot.dot(3, "red")
             current_car = current_car.next
+    car_dot.pu()
+    return
 
-    board.pu()
+
+def draw_signal():
+    signal.clear()
+    signal.pu()
+    for inter in map_init.intersections:
+        if map_init.intersections[inter].current_phase == macros.NSGREEN_EWRED:
+            signal.setpos((map_init.intersections[inter].coor[0] - 8) * macros.SCALE, (map_init.intersections[inter].coor[1] + 12) * macros.SCALE )
+            signal.dot(4, "green")
+            signal.setpos((map_init.intersections[inter].coor[0] + 8) * macros.SCALE, (map_init.intersections[inter].coor[1] - 12) * macros.SCALE)
+            signal.dot(4, "green")
+            signal.setpos((map_init.intersections[inter].coor[0] - 12) * macros.SCALE, (map_init.intersections[inter].coor[1] - 8) * macros.SCALE)
+            signal.dot(4, "red")
+            signal.setpos((map_init.intersections[inter].coor[0] + 12) * macros.SCALE, (map_init.intersections[inter].coor[1] + 8) * macros.SCALE)
+            signal.dot(4, "red")
+        elif map_init.intersections[inter].current_phase == macros.NSYELLOW_EWRED:
+            signal.setpos((map_init.intersections[inter].coor[0] - 8) * macros.SCALE, (map_init.intersections[inter].coor[1] + 12) * macros.SCALE )
+            signal.dot(4, "yellow")
+            signal.setpos((map_init.intersections[inter].coor[0] + 8) * macros.SCALE, (map_init.intersections[inter].coor[1] - 12) * macros.SCALE)
+            signal.dot(4, "yellow")
+            signal.setpos((map_init.intersections[inter].coor[0] - 12) * macros.SCALE, (map_init.intersections[inter].coor[1] - 8) * macros.SCALE)
+            signal.dot(4, "red")
+            signal.setpos((map_init.intersections[inter].coor[0] + 12) * macros.SCALE, (map_init.intersections[inter].coor[1] + 8) * macros.SCALE)
+            signal.dot(4, "red")
+        elif map_init.intersections[inter].current_phase == macros.NSRED_EWGREEN:
+            signal.setpos((map_init.intersections[inter].coor[0] - 8) * macros.SCALE, (map_init.intersections[inter].coor[1] + 12) * macros.SCALE )
+            signal.dot(4, "red")
+            signal.setpos((map_init.intersections[inter].coor[0] + 8) * macros.SCALE, (map_init.intersections[inter].coor[1] - 12) * macros.SCALE)
+            signal.dot(4, "red")
+            signal.setpos((map_init.intersections[inter].coor[0] - 12) * macros.SCALE, (map_init.intersections[inter].coor[1] - 8) * macros.SCALE)
+            signal.dot(4, "green")
+            signal.setpos((map_init.intersections[inter].coor[0] + 12) * macros.SCALE, (map_init.intersections[inter].coor[1] + 8) * macros.SCALE)
+            signal.dot(4, "green")
+        elif map_init.intersections[inter].current_phase == macros.NSRED_EWYELLOW:
+            signal.setpos((map_init.intersections[inter].coor[0] - 8) * macros.SCALE, (map_init.intersections[inter].coor[1] + 12) * macros.SCALE )
+            signal.dot(4, "red")
+            signal.setpos((map_init.intersections[inter].coor[0] + 8) * macros.SCALE, (map_init.intersections[inter].coor[1] - 12) * macros.SCALE)
+            signal.dot(4, "red")
+            signal.setpos((map_init.intersections[inter].coor[0] - 12) * macros.SCALE, (map_init.intersections[inter].coor[1] - 8) * macros.SCALE)
+            signal.dot(4, "yellow")
+            signal.setpos((map_init.intersections[inter].coor[0] + 12) * macros.SCALE, (map_init.intersections[inter].coor[1] + 8) * macros.SCALE)
+            signal.dot(4, "yellow")
+    signal.pu()
     return
 
 
@@ -165,7 +212,8 @@ def draw_hor_street(pos, length):
         board.pu()
         sign *= -1
 
-
 #map_init.map_init()
 #draw_map()
-#screen.mainloop()
+#map_init.intersections[(1,1)].current_phase = 2
+#draw_signa#l()
+

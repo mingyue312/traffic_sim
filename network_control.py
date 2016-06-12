@@ -4,6 +4,7 @@ import car_define
 import macros
 import intersection_process
 import visualization
+import qlearning_helper
 
 
 def network_control():
@@ -38,7 +39,9 @@ def network_control():
             # this variable controls the phase of each intersection.
             # -1: autonomous phase control, 1: change phase, 0: keep current phase
             # if not autonomous, this signal should be produced by learning algorithm
-
+            queue_len = qlearning_helper.get_queue_len(map_init.intersections[inter])
+            queue_len.append(map_init.intersections[inter].timer)
+            # action = Q-learning.Qlearning(queue_len)
             action = -1
 
             if action == -1:
@@ -48,6 +51,7 @@ def network_control():
                         if map_init.intersections[inter].current_phase == 5:
                             map_init.intersections[inter].current_phase = 1
                         map_init.intersections[inter].timer = 0
+                        visualization.draw_signal()
                     map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
                                                                 macros.TIME_INCREMENT, 1)
                 elif map_init.intersections[inter].current_phase in [macros.NSRED_EWGREEN, macros.NSGREEN_EWRED]:
@@ -56,14 +60,17 @@ def network_control():
                         if map_init.intersections[inter].current_phase == 5:
                             map_init.intersections[inter].current_phase = 1
                         map_init.intersections[inter].timer = 0
+                        visualization.draw_signal()
                     map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
                                                                 macros.TIME_INCREMENT, 1)
 
             elif action == 1:
-                map_init.intersections.current_phase += 1
-                if map_init.intersections.current_phase == 5:
-                    map_init.intersections.current_phase = 1
+                map_init.intersections[inter].current_phase += 1
+                if map_init.intersections[inter].current_phase == 5:
+                    map_init.intersections[inter].current_phase = 1
                 map_init.intersections[inter].timer = macros.TIME_INCREMENT
+                visualization.draw_signal()
+                action = 0
 
             elif action == 0:
                 map_init.intersections[inter].timer = round(map_init.intersections[inter].timer +
@@ -78,4 +85,5 @@ def network_control():
 
 map_init.map_init()
 visualization.draw_map()
+visualization.draw_signal()
 network_control()
