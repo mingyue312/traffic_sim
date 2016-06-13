@@ -391,7 +391,7 @@ def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposi
     target_intersection = getattr(intersection, target_inter)
 
     if current_length - car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT:
-        car.acc = -car.speed ** 2 / (2 * (current_length - car.position))
+            car.acc = -car.speed ** 2 / (2 * (current_length - car.position))
     if current_length - car.position <= macros.OBSERVE_DISTANCE:
         if (opposite_len + 6 - opposite_left_car.position) / opposite_left_car.speed >= 2:
             ol_ok = 1
@@ -417,15 +417,23 @@ def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposi
 def turn_right(car, intersection, target_lane, target_inter, current_length, current_lane):
     if car.position >= current_length:
         target_intersection = getattr(intersection, target_inter)
+        if car.prev:
+            if car.next:
+                car.prev.next = car.next
+                car.next.prev = car.prev
+            else:
+                car.prev.next = None
+        else:
+            if car.next:
+                intersection.cars_queue[current_lane] = car.next
+                car.next.prev = None
+            else:
+                intersection.cars_queue[current_lane] = None
+
         if target_intersection:
             target_intersection.append(target_lane, car)
             car.position = 0
-        if car.next:
-            intersection.cars_queue[current_lane] = car.next
-            car.next.prev = None
             car.next = None
-        else:
-            intersection.cars_queue[current_lane] = None
         return
 
 
@@ -441,7 +449,7 @@ def get_needed_data(current_lane):
             macros.SOUTHL, macros.SOUTHR, "south_len", macros.WESTL, "east", macros.EASTR, "west", "north_len", "south")
     if current_lane == macros.SOUTHR or current_lane == macros.SOUTHL:
         return (
-            macros.NORTHL, macros.NORTHR, "north_len", macros.EASTL, "north", macros.WESTR, "east", "south_len",
+            macros.NORTHL, macros.NORTHR, "north_len", macros.EASTL, "west", macros.WESTR, "east", "south_len",
             "north")
 
 
@@ -488,9 +496,9 @@ def process_one_lane(current_lane, current_inter_num, signal):
                     straight_target_inter = getattr(current_inter, straight_target)
                     if straight_target_inter:
                         straight_target_inter.append(current_lane, current_car)
+                        current_car.position = current_car.position - current_length - 12
                     if current_car.next:
                         current_inter.cars_queue[current_lane] = current_car.next
-                        current_car.position = current_car.position - current_length - 12
                         current_car.next.prev = None
                         current_car.next = None
                     else:

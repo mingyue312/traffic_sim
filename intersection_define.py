@@ -28,6 +28,7 @@ class Intersection:
             while current.next:
                 current = current.next
             current.next = target
+            target.prev = current
         else:
             self.cars_queue[lane] = target
 
