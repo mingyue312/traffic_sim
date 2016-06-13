@@ -39,9 +39,10 @@ def network_control():
             # this variable controls the phase of each intersection.
             # -1: autonomous phase control, 1: change phase, 0: keep current phase
             # if not autonomous, this signal should be produced by learning algorithm
-            queue_len = qlearning_helper.get_queue_len(map_init.intersections[inter])
-            queue_len.append(map_init.intersections[inter].timer)
-            # action = Q-learning.Qlearning(queue_len)
+            if macros.SIM_TIME % 5 == 0:
+                queue_len = qlearning_helper.get_queue_len(map_init.intersections[inter])
+                queue_len.append(map_init.intersections[inter].timer)
+                #action = Q-learning.Qlearning(queue_len)
             action = -1
 
             if action == -1:
