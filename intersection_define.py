@@ -25,7 +25,7 @@ class Intersection:
     def append(self, lane, target):
         current = self.cars_queue[lane]
         if current:
-            while current.next != None:
+            while current.next:
                 current = current.next
             current.next = target
         else:
