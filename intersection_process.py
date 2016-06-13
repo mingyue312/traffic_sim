@@ -2,6 +2,7 @@ import macros
 import car_define
 import intersection_define
 import map_init
+import random
 
 ####list_of_vehicle
 ### add time_incre at the end of this function
@@ -278,11 +279,11 @@ def change_lane(side_lane_num, car, inter, current_lane):
 
                 else:
                     if not car.prev:
-                        car.acc = macros.DECELERATION
+                        car.acc = macros.DECELERATION - random.random()*0.5
                     elif (car.prev.position - car.position) < macros.SAFE_DIST:
-                        car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position)))
+                        car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position))) - random.random()*0.5
                     else:
-                        car.acc = macros.DECELERATION
+                        car.acc = macros.DECELERATION - random.random()*0.5
             else:
                 if car.position - current_side_lane_car.position > macros.SAFE_DIST or car.speed > current_side_lane_car.speed:
                     if not car.prev:
@@ -314,11 +315,11 @@ def change_lane(side_lane_num, car, inter, current_lane):
 
                 else:
                     if not car.prev:
-                        car.acc = macros.DECELERATION
+                        car.acc = macros.DECELERATION - random.random()*0.5
                     elif (car.prev.position - car.position) < macros.SAFE_DIST:
-                        car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position)))
+                        car.acc = min(macros.DECELERATION, ((car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position)))) - random.random()*0.5
                     else:
-                        car.acc = macros.DECELERATION
+                        car.acc = macros.DECELERATION - random.random()*0.5
             break
         if not current_side_lane_car.next:
             break
@@ -372,44 +373,59 @@ def change_lane(side_lane_num, car, inter, current_lane):
                         car.next = None
             else:
                 if not car.prev:
-                    car.acc = macros.DECELERATION
+                    car.acc = macros.DECELERATION - random.random()*0.5
                 elif (car.prev.position - car.position) < macros.SAFE_DIST:
-                    car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position)))
+                    car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position))) - random.random()*0.5
                 else:
-                    car.acc = macros.DECELERATION
+                    car.acc = macros.DECELERATION - random.random()*0.5
 
 
 def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposite_len, target_lane, target_inter,
               current_length, current_lane):
     opposite_len = getattr(intersection, opposite_len)
-
+    ol_ok = 0
+    or_ok = 0
     opposite_left_car = intersection.cars_queue[opposite_left_lane]
+
     opposite_right_car = intersection.cars_queue[opposite_right_lane]
     target_intersection = getattr(intersection, target_inter)
 
     if current_length - car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT:
         car.acc = -car.speed ** 2 / (2 * (current_length - car.position))
     if current_length - car.position <= macros.OBSERVE_DISTANCE:
-        if ((opposite_len + 6 - opposite_left_car.position) / opposite_left_car.speed >= 2 or
-                (opposite_left_car.position >= opposite_len + 6 and (
-                            opposite_left_car.position - opposite_left_car.next.position) / opposite_left_car.next.speed >= 2)) and \
-                ((opposite_len + 6 - opposite_right_car.position) / opposite_right_car.speed >= 3 or
-                     (opposite_right_car.position >= opposite_len + 6 and (
-                                 opposite_right_car.position - opposite_right_car.next.position) / opposite_right_car.next.speed >= 3)):
-            target_intersection.append(target_lane, car)
+        if (opposite_len + 6 - opposite_left_car.position) / opposite_left_car.speed >= 2:
+            ol_ok = 1
+        if opposite_left_car.position >= opposite_len + 6 and (not opposite_left_car.next or (opposite_len + 6 - opposite_left_car.next.position) / opposite_left_car.next.speed >= 2):
+            ol_ok = 1
+        if (opposite_len + 6 - opposite_right_car.position) / opposite_right_car.speed >= 3:
+            or_ok = 1
+        if opposite_right_car.position >= opposite_len + 6 and (not opposite_right_car.next or (opposite_len + 6 - opposite_right_car.next.position) / opposite_right_car.next.speed >= 3):
+            or_ok = 1
+        if ol_ok and or_ok:
+            if target_intersection:
+                target_intersection.append(target_lane, car)
+                car.position = 0
             if car.next:
                 intersection.cars_queue[current_lane] = car.next
                 car.next.prev = None
+                car.next = None
             else:
                 intersection.cars_queue[current_lane] = None
     return
 
 
-def turn_right(car, intersection, target_lane, target_inter,current_length):
+def turn_right(car, intersection, target_lane, target_inter, current_length, current_lane):
     if car.position >= current_length:
         target_intersection = getattr(intersection, target_inter)
-        car.next.prev = None
-        target_intersection.append(target_lane, car)
+        if target_intersection:
+            target_intersection.append(target_lane, car)
+            car.position = 0
+        if car.next:
+            intersection.cars_queue[current_lane] = car.next
+            car.next.prev = None
+            car.next = None
+        else:
+            intersection.cars_queue[current_lane] = None
         return
 
 
@@ -462,15 +478,23 @@ def process_one_lane(current_lane, current_inter_num, signal):
                     change_lane(side_lane_num, current_car,current_inter,current_lane)
                     current_car.change_lane = 0
                 else:
-                    turn_right(current_car, current_inter, right_target_intersection, right_target_lane, current_length)
+                    turn_right(current_car, current_inter, right_target_lane, right_target_intersection, current_length, current_lane)
 
             car_define.get_speed(current_car)
             car_define.get_position(current_car)
 
-            if current_car.position >= current_length + 12:
-                straight_target_inter = getattr(current_inter, straight_target)
-                straight_target_inter.append(current_lane, current_car)
-                current_car.next.prev = None
+            if current_car.turn == macros.STRAIGHT:
+                if current_car.position >= current_length + 12:
+                    straight_target_inter = getattr(current_inter, straight_target)
+                    if straight_target_inter:
+                        straight_target_inter.append(current_lane, current_car)
+                    if current_car.next:
+                        current_inter.cars_queue[current_lane] = current_car.next
+                        current_car.position = current_car.position - current_length - 12
+                        current_car.next.prev = None
+                        current_car.next = None
+                    else:
+                        current_inter.cars_queue[current_lane] = None
             current_car = next_car
 
     elif signal == macros.YELLOW:
@@ -503,6 +527,15 @@ def process_one_lane(current_lane, current_inter_num, signal):
             car_define.get_speed(current_car)
             car_define.get_position(current_car)
 
+            if current_car.position >= current_length + 12:
+                straight_target_inter = getattr(current_inter, straight_target)
+                if straight_target_inter:
+                    straight_target_inter.append(current_lane, current_car)
+                if current_car.next:
+                    current_inter.cars_queue[current_lane] = current_car.next
+                    current_car.position = 0
+                    current_car.next.prev = None
+                    current_car.next = None
             current_car = next_car
 
     elif signal == macros.RED:
