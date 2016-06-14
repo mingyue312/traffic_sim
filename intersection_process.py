@@ -536,7 +536,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
                             current_car.speed = 0
                     else:
                         current_car.acc = -abs(current_car.speed ** 2 / (
-                            2 * (current_car.prev.position - macros.LENGTHE_CAR - current_car.position)))
+                            2 * (current_car.prev.position - current_car.position)))
 
                 if current_car.change_lane == 1:
                     change_lane(side_lane_num, current_car,current_inter,current_lane)
@@ -581,7 +581,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
                         current_car.speed = 0
                 else:
                     current_car.acc = -abs(current_car.speed ** 2 / (
-                        2 * (current_car.prev.position - macros.LENGTHE_CAR - current_car.position)))
+                        2 * (current_car.prev.position - current_car.position)))
             if current_car.change_lane == 1:
                 change_lane(side_lane_num, current_car,current_inter,current_lane)
                 current_car.change_lane = 0
