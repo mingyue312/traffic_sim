@@ -219,7 +219,9 @@ def car_follow(current_car):
             current_car.speed = macros.CRUISE_SPEED
             current_car.acc = 0
     else:
-        if (current_car.prev.position - current_car.position) < macros.SAFE_DIST:
+        if current_car.position == current_car.prev.position:
+            current_car.acc = macros.DECELERATION
+        elif (current_car.prev.position - current_car.position) < macros.SAFE_DIST:
             current_car.acc = min(macros.DECELERATION, (current_car.prev.speed**2 - current_car.speed**2)/(2*(current_car.prev.position - current_car.position)))
         elif (current_car.prev.position - current_car.position) == macros.SAFE_DIST:
             current_car.acc = 0
@@ -245,9 +247,9 @@ def change_lane(side_lane_num, car, inter, current_lane):
             lagging_car = current_side_lane_car
             if current_side_lane_car.prev:
                 leading_car = current_side_lane_car.prev
-                if (leading_car.position - lagging_car.position) > macros.CRITICAL_GAP * car.speed \
-                        and (car.position - lagging_car.position > macros.SAFE_DIST or car.speed > lagging_car.speed) \
-                        and (leading_car.position - car.position > macros.SAFE_DIST or leading_car.speed > car.speed):
+                if (leading_car.position - lagging_car.position) >= macros.CRITICAL_GAP * car.speed \
+                        and (car.position - lagging_car.position >= macros.SAFE_DIST or car.speed >= lagging_car.speed) \
+                        and (leading_car.position - car.position >= macros.SAFE_DIST or leading_car.speed >= car.speed):
                     if not car.prev:
                         if not car.next:
                             inter.cars_queue[current_lane] = None
@@ -285,7 +287,7 @@ def change_lane(side_lane_num, car, inter, current_lane):
                     else:
                         car.acc = macros.DECELERATION - random.random()*0.5
             else:
-                if car.position - current_side_lane_car.position > macros.SAFE_DIST or car.speed > current_side_lane_car.speed:
+                if car.position - current_side_lane_car.position >= macros.SAFE_DIST or car.speed >= current_side_lane_car.speed:
                     if not car.prev:
                         if not car.next:
                             inter.cars_queue[side_lane_num] = car
@@ -348,7 +350,7 @@ def change_lane(side_lane_num, car, inter, current_lane):
                     car.next = None
                     inter.cars_queue[side_lane_num] = car
         else:
-            if current_side_lane_car.position - car.position > macros.SAFE_DIST or current_side_lane_car.speed > car.speed:
+            if current_side_lane_car.position - car.position >= macros.SAFE_DIST or current_side_lane_car.speed >= car.speed:
                 if not car.prev:
                     if not car.next:
                         inter.cars_queue[current_lane] = None
@@ -391,7 +393,11 @@ def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposi
     target_intersection = getattr(intersection, target_inter)
 
     if current_length - car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT:
-            car.acc = -car.speed ** 2 / (2 * (current_length - car.position))
+        if current_length > car.position:
+            car.acc = -abs(car.speed ** 2 / (2 * (current_length - car.position)))
+        else:
+            car.acc = 0
+            car.speed = 0
     if current_length - car.position <= macros.OBSERVE_DISTANCE:
         if (opposite_len + 6 - opposite_left_car.position) / opposite_left_car.speed >= 2:
             ol_ok = 1
@@ -515,7 +521,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
             side_lane_num = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
                          macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL][i]
             if current_car.position > current_length:
-                car_follow(current_car)
+                current_car.acc = macros.ACCELERATION
 
             else:
                 if current_length - current_car.position > 50:
@@ -523,10 +529,14 @@ def process_one_lane(current_lane, current_inter_num, signal):
 
                 else:
                     if not current_car.prev or current_car.prev.position > current_length:
-                        current_car.acc = -current_car.speed ** 2 / (2 * (current_length - current_car.position))
+                        if current_length > current_car.position:
+                            current_car.acc = -abs(current_car.speed ** 2 / (2 * (current_length - current_car.position)))
+                        else:
+                            current_car.acc = 0
+                            current_car.speed = 0
                     else:
-                        current_car.acc = -current_car.speed ** 2 / (
-                            2 * (current_car.prev.position - macros.LENGTHE_CAR - current_car.position))
+                        current_car.acc = -abs(current_car.speed ** 2 / (
+                            2 * (current_car.prev.position - macros.LENGTHE_CAR - current_car.position)))
 
                 if current_car.change_lane == 1:
                     change_lane(side_lane_num, current_car,current_inter,current_lane)
@@ -556,15 +566,22 @@ def process_one_lane(current_lane, current_inter_num, signal):
             side_lane_num = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
                          macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL][i]
 
+            if current_car.position > current_length:
+                current_car.acc = macros.ACCELERATION
+
             if current_length - current_car.position > 50:
                 car_follow(current_car)
 
             else:
                 if not current_car.prev:
-                    current_car.acc = -current_car.speed ** 2 / (2 * (current_length - current_car.position))
+                    if current_length > current_car.position:
+                        current_car.acc = -abs(current_car.speed ** 2 / (2 * (current_length - current_car.position)))
+                    else:
+                        current_car.acc = 0
+                        current_car.speed = 0
                 else:
-                    current_car.acc = -current_car.speed ** 2 / (
-                        2 * (current_car.prev.position - macros.LENGTHE_CAR - current_car.position))
+                    current_car.acc = -abs(current_car.speed ** 2 / (
+                        2 * (current_car.prev.position - macros.LENGTHE_CAR - current_car.position)))
             if current_car.change_lane == 1:
                 change_lane(side_lane_num, current_car,current_inter,current_lane)
                 current_car.change_lane = 0

@@ -40,8 +40,10 @@ def get_speed(car):
     if car.speed <= 0:
         car.speed = 0
         car.acc = 0
-    if car.speed > 15:
-        print("fuck")
+    if car.speed > macros.CRUISE_SPEED:
+        car.speed = macros.CRUISE_SPEED
+        car.acc = 0
+
 
 
 
