@@ -1,6 +1,8 @@
 import map_init
 import macros
 import turtle
+import qlearning_helper
+import datetime
 
 screen = turtle.Screen()
 screen.setworldcoordinates(-100, -800, 800, 100)
@@ -212,8 +214,27 @@ def draw_hor_street(pos, length):
         board.pu()
         sign *= -1
 
+
+def log_init():
+    f = open('./avg_queue_length_log.txt', 'a')
+    #f.seek(0, 2)
+    f.write('\n\n' + str(datetime.datetime.now()) + ':')
+    f.write('\nSIM_TIME INTERSECTION: AVG_LENGTH')
+
+
+def log_avg_car_length(internum):
+    inter = map_init.intersections[internum]
+    length = qlearning_helper.get_queue_len(internum)
+    avg_len = sum(length)/8
+    inter_name = str(internum)
+    time = str(macros.SIM_TIME)
+    f = open('./avg_queue_length_log.txt', 'a')
+    #f.seek(0, 2)
+    f.write('\n' + time + '\t'+ inter_name + ':\t' + str(avg_len))
+
 #map_init.map_init()
 #draw_map()
 #map_init.intersections[(1,1)].current_phase = 2
 #draw_signa#l()
 
+log_init()

@@ -1,8 +1,8 @@
 import map_init
-import car_define
 
 
-def get_queue_len(inter):
+def get_queue_len(internum):
+    inter = map_init.intersections[internum]
     queue_len = []
     counter = 0
     for lane in inter.cars_queue:
