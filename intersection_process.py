@@ -400,11 +400,11 @@ def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposi
             car.speed = 0
             car.position = current_length
     if current_length - car.position <= macros.OBSERVE_DISTANCE:
-        if not opposite_left_car or (opposite_len + 6 - opposite_left_car.position) >= 2 * opposite_left_car.speed:
+        if not opposite_left_car or (opposite_len + 6 - opposite_left_car.position) >= 1 * opposite_left_car.speed:
             ol_ok = 1
         elif opposite_left_car.position >= opposite_len + 6 and (not opposite_left_car.next or opposite_len + 6 - opposite_left_car.next.position >= 2 * opposite_left_car.next.speed):
             ol_ok = 1
-        if not opposite_right_car or (opposite_len + 6 - opposite_right_car.position) >= 3 * opposite_right_car.speed:
+        if not opposite_right_car or (opposite_len + 6 - opposite_right_car.position) >= 1 * opposite_right_car.speed:
             or_ok = 1
         elif opposite_right_car.position >= opposite_len + 6 and (not opposite_right_car.next or opposite_len + 6 - opposite_right_car.next.position >= 3 * opposite_right_car.next.speed):
             or_ok = 1

@@ -93,7 +93,7 @@ def network_control():
 
             # Following block processes each intersection's car movements:
             intersection_process.intersection_process(inter)
-            if macros.SIM_TIME % 100 == 0:
+            if macros.SIM_TIME % 50 == 0:
                 visualization.draw_cars()
             visualization.log_avg_car_length(inter)
 
