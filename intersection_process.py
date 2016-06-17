@@ -392,13 +392,9 @@ def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposi
     opposite_right_car = intersection.cars_queue[opposite_right_lane]
     target_intersection = getattr(intersection, target_inter)
 
-    if current_length - car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT:
-        if current_length > car.position:
-            car.acc = -abs(car.speed ** 2 / (2 * (current_length - car.position)))
-        else:
-            car.acc = 0
-            car.speed = 0
-            car.position = current_length
+    if current_length - car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT and current_length - car.position >= macros.OBSERVE_DISTANCE:
+        car.acc = (4 - car.speed**2)/(2*(current_length - macros.OBSERVE_DISTANCE - car.position))
+
     if current_length - car.position <= macros.OBSERVE_DISTANCE:
         if not opposite_left_car or (opposite_len + 6 - opposite_left_car.position) >= 1 * opposite_left_car.speed:
             ol_ok = 1
@@ -418,6 +414,7 @@ def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposi
                 car.next = None
             else:
                 intersection.cars_queue[current_lane] = None
+
         elif car.position >= current_length - 1:
             car.position = current_length
             car.speed = 0
@@ -473,6 +470,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
     (opposite_left_lane, opposite_right_lane, opposite_len, left_target_lane, left_target_intersection,
      right_target_lane, right_target_intersection, current_len, straight_target) = get_needed_data(current_lane)
     current_length = getattr(current_inter, current_len)
+
 
     if signal == macros.GREEN:
         while current_car:
