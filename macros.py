@@ -1,7 +1,7 @@
-CRITICAL_GAP = 1.5
-DURATION = 100
-HOR_DIM = [100, 150, 200]
-VER_DIM = [150, 200, 170]
+CRITICAL_GAP = 1
+DURATION = 1000
+HOR_DIM = [200, 250]
+VER_DIM = [250, 200]
 LANE_WIDTH = 3
 
 STRAIGHT = 0
@@ -22,7 +22,7 @@ NORTHR = 6
 SOUTHL = 7
 SOUTHR = 8
 INITSPEED = 15      #initial entering speed of 15 m/s
-FREQ = 1            #shorter = more frequent car entering
+FREQ = 5            #shorter = more frequent car entering
 
 NSGREEN_EWRED = 1
 NSYELLOW_EWRED = 2
@@ -42,7 +42,7 @@ NUMBER_ARRIVAL = 5
 TIME_INCREMENT = 0.1
 SIM_TIME = 0
 
-SAFE_DIST = 8
+SAFE_DIST = 6
 CRUISE_SPEED = 15
 ACCELERATION = 10
 DECELERATION = -10

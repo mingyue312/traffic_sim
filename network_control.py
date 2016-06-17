@@ -5,9 +5,12 @@ import macros
 import intersection_process
 import visualization
 import qlearning_helper
+#import Qlearning4
 
 
 def network_control():
+    action = 1  # start with NSGREEN_WERED
+    prev_action = action
     while macros.SIM_TIME <= macros.DURATION:
         for inter in map_init.intersections:
 
@@ -39,11 +42,13 @@ def network_control():
             # this variable controls the phase of each intersection.
             # -1: autonomous phase control, 1: change phase, 0: keep current phase
             # if not autonomous, this signal should be produced by learning algorithm
-            action = 1      # start with NSGREEN_WERED
+
             if macros.SIM_TIME % 5 == 0:
                 queue_len = qlearning_helper.get_queue_len(inter)
                 queue_len.append(map_init.intersections[inter].timer)
-                action = Q-learning.Qlearning(queue_len)
+                prev_action = action
+                action = random.randint(0, 1)
+                #action = Qlearning4.qlearning(queue_len)
             #action = -1
 
             if action == -1:
@@ -73,20 +78,22 @@ def network_control():
                     visualization.draw_signal()
                 map_init.intersections[inter].timer = round(map_init.intersections[inter].timer + macros.TIME_INCREMENT, 1)
 
-            if action == 1 and map_init.intersections[inter].current_phase == macros.NSRED_EWGREEN:
-                map_init.intersections[inter].current_phase = macros.NSGREEN_EWRED
+            elif prev_action != action and action == 1 and map_init.intersections[inter].current_phase == macros.NSRED_EWGREEN:
+                map_init.intersections[inter].current_phase = macros.NSRED_EWYELLOW
                 map_init.intersections[inter].timer = macros.TIME_INCREMENT
                 visualization.draw_signal()
-            elif action == 0 and map_init.intersections[inter].current_phase == macros.NSGREEN_EWRED:
-                map_init.intersections[inter].current_phase = macros.NSRED_EWGREEN
+                prev_action = action
+            elif prev_action != action and action == 0 and map_init.intersections[inter].current_phase == macros.NSGREEN_EWRED:
+                map_init.intersections[inter].current_phase = macros.NSYELLOW_EWRED
                 map_init.intersections[inter].timer = macros.TIME_INCREMENT
                 visualization.draw_signal()
+                prev_action = action
             else:
                 map_init.intersections[inter].timer = round(map_init.intersections[inter].timer + macros.TIME_INCREMENT, 1)
 
             # Following block processes each intersection's car movements:
             intersection_process.intersection_process(inter)
-            if macros.SIM_TIME % 5 == 0:
+            if macros.SIM_TIME % 100 == 0:
                 visualization.draw_cars()
             visualization.log_avg_car_length(inter)
 

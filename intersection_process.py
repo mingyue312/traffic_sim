@@ -234,7 +234,7 @@ def car_follow(current_car):
 
 
 def change_lane(side_lane_num, car, inter, current_lane):
-    ##1 means turn left
+    # -1 means turn left
     find_lagging_car = 0
     side_lane = inter.cars_queue[side_lane_num]
     current_side_lane_car = side_lane
@@ -400,13 +400,13 @@ def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposi
             car.speed = 0
             car.position = current_length
     if current_length - car.position <= macros.OBSERVE_DISTANCE:
-        if (opposite_len + 6 - opposite_left_car.position) >= 2 * opposite_left_car.speed:
+        if not opposite_left_car or (opposite_len + 6 - opposite_left_car.position) >= 2 * opposite_left_car.speed:
             ol_ok = 1
-        if opposite_left_car.position >= opposite_len + 6 and (not opposite_left_car.next or opposite_len + 6 - opposite_left_car.next.position >= 2 * opposite_left_car.next.speed):
+        elif opposite_left_car.position >= opposite_len + 6 and (not opposite_left_car.next or opposite_len + 6 - opposite_left_car.next.position >= 2 * opposite_left_car.next.speed):
             ol_ok = 1
-        if (opposite_len + 6 - opposite_right_car.position) >= 3 * opposite_right_car.speed:
+        if not opposite_right_car or (opposite_len + 6 - opposite_right_car.position) >= 3 * opposite_right_car.speed:
             or_ok = 1
-        if opposite_right_car.position >= opposite_len + 6 and (not opposite_right_car.next or opposite_len + 6 - opposite_right_car.next.position >= 3 * opposite_right_car.next.speed):
+        elif opposite_right_car.position >= opposite_len + 6 and (not opposite_right_car.next or opposite_len + 6 - opposite_right_car.next.position >= 3 * opposite_right_car.next.speed):
             or_ok = 1
         if ol_ok and or_ok:
             if target_intersection:
