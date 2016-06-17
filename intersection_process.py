@@ -396,11 +396,11 @@ def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposi
         car.acc = (4 - car.speed**2)/(2*(current_length - macros.OBSERVE_DISTANCE - car.position))
 
     if current_length - car.position <= macros.OBSERVE_DISTANCE:
-        if not opposite_left_car or (opposite_len + 6 - opposite_left_car.position) >= 1 * opposite_left_car.speed:
+        if not opposite_left_car or (opposite_len + 6 - opposite_left_car.position) >= 2 * opposite_left_car.speed:
             ol_ok = 1
         elif opposite_left_car.position >= opposite_len + 6 and (not opposite_left_car.next or opposite_len + 6 - opposite_left_car.next.position >= 2 * opposite_left_car.next.speed):
             ol_ok = 1
-        if not opposite_right_car or (opposite_len + 6 - opposite_right_car.position) >= 1 * opposite_right_car.speed:
+        if not opposite_right_car or (opposite_len + 6 - opposite_right_car.position) >= 2 * opposite_right_car.speed:
             or_ok = 1
         elif opposite_right_car.position >= opposite_len + 6 and (not opposite_right_car.next or opposite_len + 6 - opposite_right_car.next.position >= 3 * opposite_right_car.next.speed):
             or_ok = 1
@@ -471,7 +471,6 @@ def process_one_lane(current_lane, current_inter_num, signal):
      right_target_lane, right_target_intersection, current_len, straight_target) = get_needed_data(current_lane)
     current_length = getattr(current_inter, current_len)
 
-
     if signal == macros.GREEN:
         while current_car:
             next_car = current_car.next
@@ -527,7 +526,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
                 current_car.acc = macros.ACCELERATION
 
             else:
-                if current_length - current_car.position > 50:
+                if current_length - current_car.position > 20:
                     car_follow(current_car)
 
                 else:
@@ -575,7 +574,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
             if current_car.position > current_length:
                 current_car.acc = macros.ACCELERATION
 
-            if current_length - current_car.position > 50:
+            if current_length - current_car.position > 20:
                 car_follow(current_car)
 
             else:
