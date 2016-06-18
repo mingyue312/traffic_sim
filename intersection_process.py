@@ -281,11 +281,11 @@ def change_lane(side_lane_num, car, inter, current_lane):
 
                 else:
                     if not car.prev:
-                        car.acc = macros.DECELERATION - random.random()*0.5
+                        car.acc = macros.DECELERATION - random.random()
                     elif (car.prev.position - car.position) < macros.SAFE_DIST:
-                        car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position))) - random.random()*0.5
+                        car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position))) - random.random()
                     else:
-                        car.acc = macros.DECELERATION - random.random()*0.5
+                        car.acc = macros.DECELERATION - random.random()
             else:
                 if car.position - current_side_lane_car.position >= macros.SAFE_DIST or car.speed >= current_side_lane_car.speed:
                     if not car.prev:
@@ -317,11 +317,11 @@ def change_lane(side_lane_num, car, inter, current_lane):
 
                 else:
                     if not car.prev:
-                        car.acc = macros.DECELERATION - random.random()*0.5
+                        car.acc = macros.DECELERATION - random.random()
                     elif (car.prev.position - car.position) < macros.SAFE_DIST:
-                        car.acc = min(macros.DECELERATION, ((car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position)))) - random.random()*0.5
+                        car.acc = min(macros.DECELERATION, ((car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position)))) - random.random()
                     else:
-                        car.acc = macros.DECELERATION - random.random()*0.5
+                        car.acc = macros.DECELERATION - random.random()
             break
         if not current_side_lane_car.next:
             break
@@ -375,11 +375,11 @@ def change_lane(side_lane_num, car, inter, current_lane):
                         car.next = None
             else:
                 if not car.prev:
-                    car.acc = macros.DECELERATION - random.random()*0.5
+                    car.acc = macros.DECELERATION - random.random()
                 elif (car.prev.position - car.position) < macros.SAFE_DIST:
-                    car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position))) - random.random()*0.5
+                    car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position))) - random.random()
                 else:
-                    car.acc = macros.DECELERATION - random.random()*0.5
+                    car.acc = macros.DECELERATION - random.random()
 
 
 def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposite_len, target_lane, target_inter,
@@ -392,7 +392,7 @@ def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposi
     opposite_right_car = intersection.cars_queue[opposite_right_lane]
     target_intersection = getattr(intersection, target_inter)
 
-    if current_length - car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT and current_length - car.position >= macros.OBSERVE_DISTANCE:
+    if current_length - car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT and current_length - car.position > macros.OBSERVE_DISTANCE:
         car.acc = (4 - car.speed**2)/(2*(current_length - macros.OBSERVE_DISTANCE - car.position))
 
     if current_length - car.position <= macros.OBSERVE_DISTANCE:
@@ -423,7 +423,7 @@ def turn_left(car, opposite_left_lane, opposite_right_lane, intersection, opposi
 
 
 def turn_right(car, intersection, target_lane, target_inter, current_length, current_lane):
-    if car.position >= current_length:
+    if car.position >= current_length - 1:
         target_intersection = getattr(intersection, target_inter)
         if car.prev:
             if car.next:
@@ -526,12 +526,14 @@ def process_one_lane(current_lane, current_inter_num, signal):
                 current_car.acc = macros.ACCELERATION
 
             else:
-                if current_length - current_car.position > 20:
+                if current_length - current_car.position > macros.DISTANCE_FROM_TRAFFIC_LIGHT:
                     car_follow(current_car)
 
                 else:
                     if not current_car.prev or current_car.prev.position > current_length:
-                        if current_length > current_car.position:
+                        if 1 < current_length - current_car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT:
+                            current_car.acc = (1 - current_car.speed ** 2) / (2 * (current_length - 1 - current_car.position))
+                        elif 0 < current_length - current_car.position <= 1:
                             current_car.acc = -abs(current_car.speed ** 2 / (2 * (current_length - current_car.position)))
                         else:
                             current_car.acc = 0
@@ -574,12 +576,15 @@ def process_one_lane(current_lane, current_inter_num, signal):
             if current_car.position > current_length:
                 current_car.acc = macros.ACCELERATION
 
-            if current_length - current_car.position > 20:
+            if current_length - current_car.position > macros.DISTANCE_FROM_TRAFFIC_LIGHT:
                 car_follow(current_car)
 
             else:
                 if not current_car.prev or current_car.prev.position > current_length:
-                    if current_length > current_car.position:
+                    if 1 < current_length - current_car.position <= macros.DISTANCE_FROM_TRAFFIC_LIGHT:
+                        current_car.acc = (1 - current_car.speed ** 2) / (
+                        2 * (current_length - 1 - current_car.position))
+                    elif 0 < current_length - current_car.position <= 1:
                         current_car.acc = -abs(current_car.speed ** 2 / (2 * (current_length - current_car.position)))
                     else:
                         current_car.acc = 0

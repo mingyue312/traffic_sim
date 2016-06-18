@@ -43,7 +43,7 @@ def network_control():
             # -1: autonomous phase control, 1: change phase, 0: keep current phase
             # if not autonomous, this signal should be produced by learning algorithm
 
-            if macros.SIM_TIME % 5 == 0:
+            if macros.SIM_TIME % 3 == 0:
                 queue_len = qlearning_helper.get_queue_len(inter)
                 queue_len.append(map_init.intersections[inter].timer)
                 prev_action = action
@@ -93,7 +93,7 @@ def network_control():
 
             # Following block processes each intersection's car movements:
             intersection_process.intersection_process(inter)
-            if macros.SIM_TIME % 50 == 0:
+            if macros.SIM_TIME % 100 == 0:
                 visualization.draw_cars()
             visualization.log_avg_car_length(inter)
 
