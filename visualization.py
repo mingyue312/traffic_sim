@@ -5,7 +5,7 @@ import qlearning_helper
 import datetime
 
 screen = turtle.Screen()
-screen.setworldcoordinates(-100, -800, 800, 100)
+screen.setworldcoordinates(0, -1100, 1400, 0)
 board = turtle.Turtle()
 board.ht()
 board.speed(0)
@@ -43,49 +43,49 @@ def draw_cars():
         current_car = map_init.intersections[inter].cars_queue[macros.WESTL]
         while current_car:
             car_dot.setpos((interx - 6 - wl + current_car.position) * macros.SCALE, (intery - 1.5) * macros.SCALE)
-            car_dot.dot(3, "red")
+            car_dot.dot(1.5 * macros.SCALE, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.WESTR]
         while current_car:
             car_dot.setpos((interx - 6 - wl + current_car.position) * macros.SCALE, (intery - 4.5) * macros.SCALE)
-            car_dot.dot(3, "red")
+            car_dot.dot(1.5 * macros.SCALE, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.EASTL]
         while current_car:
             car_dot.setpos((interx + 6 + el - current_car.position) * macros.SCALE, (intery + 1.5) * macros.SCALE)
-            car_dot.dot(3, "red")
+            car_dot.dot(1.5 * macros.SCALE, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.EASTR]
         while current_car:
             car_dot.setpos((interx + 6 + el - current_car.position) * macros.SCALE, (intery + 4.5) * macros.SCALE)
-            car_dot.dot(3, "red")
+            car_dot.dot(1.5 * macros.SCALE, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.NORTHL]
         while current_car:
             car_dot.setpos((interx - 1.5) * macros.SCALE, (intery + 6 + nl - current_car.position) * macros.SCALE)
-            car_dot.dot(3, "red")
+            car_dot.dot(1.5 * macros.SCALE, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.NORTHR]
         while current_car:
             car_dot.setpos((interx - 4.5) * macros.SCALE, (intery + 6 + nl - current_car.position) * macros.SCALE)
-            car_dot.dot(3, "red")
+            car_dot.dot(1.5 * macros.SCALE, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.SOUTHL]
         while current_car:
             car_dot.setpos((interx + 1.5) * macros.SCALE, (intery - 6 - sl + current_car.position) * macros.SCALE)
-            car_dot.dot(3, "red")
+            car_dot.dot(1.5 * macros.SCALE, "red")
             current_car = current_car.next
 
         current_car = map_init.intersections[inter].cars_queue[macros.SOUTHR]
         while current_car:
             car_dot.setpos((interx + 4.5) * macros.SCALE, (intery - 6 - sl + current_car.position) * macros.SCALE)
-            car_dot.dot(3, "red")
+            car_dot.dot(1.5 * macros.SCALE, "red")
             current_car = current_car.next
     car_dot.pu()
     return
