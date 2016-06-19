@@ -236,5 +236,3 @@ def log_avg_car_length(internum):
 #draw_map()
 #map_init.intersections[(1,1)].current_phase = 2
 #draw_signa#l()
-
-log_init()

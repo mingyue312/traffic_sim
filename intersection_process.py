@@ -96,6 +96,7 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
                 current_car.change_lane = 0
 
     else:
+        next_inter = (-1, -1)
         for i in range(0, len(current_car.my_path) - 1):  #decide if
             if current_inter == current_car.my_path[i]:
                 next_inter = current_car.my_path[i + 1]
@@ -103,6 +104,9 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
             else:
                 print("A car is not on its path!!!!!!")
                 return -1
+
+        if next_inter == (-1, -1):
+            print('shit!!!!!!!')
 
         if current_lane == macros.WESTL:
             if next_inter[0] == current_inter[0] + 1:
@@ -219,7 +223,8 @@ def car_follow(current_car):
             current_car.speed = macros.CRUISE_SPEED
             current_car.acc = 0
     else:
-        if current_car.position == current_car.prev.position:
+        if current_car.position >= current_car.prev.position:
+            current_car.position = current_car.prev.position - 0.1
             current_car.acc = macros.DECELERATION
         elif (current_car.prev.position - current_car.position) < macros.SAFE_DIST:
             current_car.acc = min(macros.DECELERATION, (current_car.prev.speed**2 - current_car.speed**2)/(2*(current_car.prev.position - current_car.position)))
@@ -282,8 +287,9 @@ def change_lane(side_lane_num, car, inter, current_lane):
                 else:
                     if not car.prev:
                         car.acc = macros.DECELERATION - random.random()
-                    elif car.prev.position == car.position:
-                        print('shit')
+                    elif car.position >= car.prev.position:
+                        car.acc = macros.DECELERATION
+                        car.position = car.prev.position - 0.1
                     elif (car.prev.position - car.position) < macros.SAFE_DIST:
                         car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position))) - random.random()
                     else:
@@ -320,6 +326,9 @@ def change_lane(side_lane_num, car, inter, current_lane):
                 else:
                     if not car.prev:
                         car.acc = macros.DECELERATION - random.random()
+                    elif car.position >= car.prev.position:
+                        car.acc = macros.DECELERATION
+                        car.position = car.prev.position - 0.1
                     elif (car.prev.position - car.position) < macros.SAFE_DIST:
                         car.acc = min(macros.DECELERATION, ((car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position)))) - random.random()
                     else:
@@ -378,6 +387,9 @@ def change_lane(side_lane_num, car, inter, current_lane):
             else:
                 if not car.prev:
                     car.acc = macros.DECELERATION - random.random()
+                elif car.position >= car.prev.position:
+                    car.acc = macros.DECELERATION
+                    car.position = car.prev.position - 0.1
                 elif (car.prev.position - car.position) < macros.SAFE_DIST:
                     car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position))) - random.random()
                 else:
