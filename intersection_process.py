@@ -157,10 +157,10 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
                 print("You cannot make a U turn!!!!!!!")
                 return -1
         elif current_lane == macros.EASTL:
-            if next_inter[0] == current_inter[0] + 1:
+            if next_inter[0] == current_inter[0] - 1:
                 current_car.turn = macros.RIGHT
                 current_car.change_lane = 1
-            elif next_inter[0] == current_inter[0] - 1:
+            elif next_inter[0] == current_inter[0] + 1:
                 current_car.turn = macros.LEFT
                 current_car.change_lane = 0
             elif next_inter[1] == current_inter[1] - 1:
@@ -170,10 +170,10 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
                 print("You cannot make a U turn!!!!!!!")
                 return -1
         elif current_lane == macros.EASTR:
-            if next_inter[0] == current_inter[0] + 1:
+            if next_inter[0] == current_inter[0] - 1:
                 current_car.turn = macros.RIGHT
                 current_car.change_lane = 0
-            elif next_inter[0] == current_inter[0] - 1:
+            elif next_inter[0] == current_inter[0] + 1:
                 current_car.turn = macros.LEFT
                 current_car.change_lane = 1
             elif next_inter[1] == current_inter[1] - 1:
@@ -196,10 +196,10 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
                 print("You cannot make a U turn!!!!!!!")
                 return -1
         elif current_lane == macros.SOUTHR:
-            if next_inter[1] == current_inter[1] - 1:
+            if next_inter[1] == current_inter[1] + 1:
                 current_car.turn = macros.RIGHT
                 current_car.change_lane = 0
-            elif next_inter[1] == current_inter[1] + 1:
+            elif next_inter[1] == current_inter[1] - 1:
                 current_car.turn = macros.LEFT
                 current_car.change_lane = 1
             elif next_inter[0] == current_inter[0] + 1:
@@ -282,6 +282,8 @@ def change_lane(side_lane_num, car, inter, current_lane):
                 else:
                     if not car.prev:
                         car.acc = macros.DECELERATION - random.random()
+                    elif car.prev.position == car.position:
+                        print('shit')
                     elif (car.prev.position - car.position) < macros.SAFE_DIST:
                         car.acc = min(macros.DECELERATION, (car.prev.speed**2 - car.speed**2)/(2*(car.prev.position - car.position))) - random.random()
                     else:

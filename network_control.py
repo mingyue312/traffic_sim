@@ -9,11 +9,15 @@ import Qlearning4
 
 
 def network_control():
-    action = 1  # start with NSGREEN_WERED
+    action = {}
+    input_dict = {}
+    for inter in map_init.intersections:
+        #action[inter] = 1  # start with NSGREEN_WERED
+        action[inter] = -1
     prev_action = action
+
     while macros.SIM_TIME <= macros.DURATION:
         for inter in map_init.intersections:
-
             # Following block initialize cars at every intersection if needed:
             for enter_lane in map_init.intersections[inter].boundary:
                 if macros.SIM_TIME >= map_init.intersections[inter].boundary[enter_lane]: #if time to create a new car for intersection 'inter' and lane 'enter_lane'
@@ -43,15 +47,7 @@ def network_control():
             # -1: autonomous phase control, 1: change phase, 0: keep current phase
             # if not autonomous, this signal should be produced by learning algorithm
 
-            if macros.SIM_TIME % 3 == 0:
-                queue_len = qlearning_helper.get_queue_len(inter)
-                queue_len.append(map_init.intersections[inter].timer)
-                prev_action = action
-                action = random.randint(0, 1)
-                #action = Qlearning4.qlearning(queue_len)
-            #action = -1
-
-            if action == -1:
+            if action[inter] == -1:
                 if map_init.intersections[inter].current_phase in [macros.NSRED_EWYELLOW, macros.NSYELLOW_EWRED]:
                     if map_init.intersections[inter].timer >= macros.YELLOW_PHASE:
                         map_init.intersections[inter].current_phase += 1
@@ -78,12 +74,12 @@ def network_control():
                     visualization.draw_signal()
                 map_init.intersections[inter].timer = round(map_init.intersections[inter].timer + macros.TIME_INCREMENT, 1)
 
-            elif prev_action != action and action == 1 and map_init.intersections[inter].current_phase == macros.NSRED_EWGREEN:
+            elif prev_action[inter] != action[inter] and action[inter] == 1 and map_init.intersections[inter].current_phase == macros.NSRED_EWGREEN:
                 map_init.intersections[inter].current_phase = macros.NSRED_EWYELLOW
                 map_init.intersections[inter].timer = macros.TIME_INCREMENT
                 visualization.draw_signal()
                 prev_action = action
-            elif prev_action != action and action == 0 and map_init.intersections[inter].current_phase == macros.NSGREEN_EWRED:
+            elif prev_action[inter] != action[inter] and action[inter] == 0 and map_init.intersections[inter].current_phase == macros.NSGREEN_EWRED:
                 map_init.intersections[inter].current_phase = macros.NSYELLOW_EWRED
                 map_init.intersections[inter].timer = macros.TIME_INCREMENT
                 visualization.draw_signal()
@@ -93,9 +89,17 @@ def network_control():
 
             # Following block processes each intersection's car movements:
             intersection_process.intersection_process(inter)
-            if macros.SIM_TIME % 100 == 0:
-                visualization.draw_cars()
             visualization.log_avg_car_length(inter)
+
+        if macros.SIM_TIME % 3 == 0:
+            for inter in map_init.intersections:
+                queue_len = qlearning_helper.get_queue_len(inter)
+                queue_len.append(map_init.intersections[inter].timer)
+                input_dict[inter] = queue_len
+            prev_action = action
+            #action = Qlearning4.qlearning(input_dict)
+        if macros.SIM_TIME % 50 == 0:
+            visualization.draw_cars()
 
         macros.SIM_TIME = round(macros.SIM_TIME + macros.TIME_INCREMENT, 1)
 
