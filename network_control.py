@@ -5,16 +5,16 @@ import macros
 import intersection_process
 import visualization
 import qlearning_helper
-import Qlearning4
+import Qlearning2inter
 
 
 def network_control():
     action = {}
     input_dict = {}
     for inter in map_init.intersections:
-        #action[inter] = 1  # start with NSGREEN_WERED
-        action[inter] = -1
-    prev_action = action
+        action[inter] = 1  # start with NSGREEN_WERED
+        #action[inter] = -1
+    prev_action = action.copy()
 
     while macros.SIM_TIME <= macros.DURATION:
         for inter in map_init.intersections:
@@ -91,16 +91,16 @@ def network_control():
             intersection_process.intersection_process(inter)
             visualization.log_avg_car_length(inter)
 
-        if macros.SIM_TIME % 30000 == 0:
+        if macros.SIM_TIME % 3 == 0:
             prev_action = action.copy()
             for inter in map_init.intersections:
-                #queue_len = qlearning_helper.get_queue_len(inter)
-                #queue_len.append(map_init.intersections[inter].timer)
-                #input_dict[inter] = queue_len
+                queue_len = qlearning_helper.get_queue_len(inter)
+                queue_len.append(map_init.intersections[inter].timer)
+                input_dict[inter] = queue_len
                 #action[inter] = random.randint(0, 1)
-                action[inter] = -1
-            #action = Qlearning4.qlearning(input_dict)
-        if macros.SIM_TIME % 600 == 0:
+                #action[inter] = -1
+            action = Qlearning2inter.qlearning(input_dict)   # pass in the queue_len dictionary to qlearning and get action dictionary back
+        if macros.SIM_TIME % 1000 == 0:
             visualization.draw_cars()
             visualization.draw_signal()
 
