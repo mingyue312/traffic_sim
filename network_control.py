@@ -104,6 +104,7 @@ def network_control():
             visualization.draw_cars()
             visualization.draw_signal()
             visualization.log_action_table()
+            visualization.log_q_value()
 
         macros.SIM_TIME = round(macros.SIM_TIME + macros.TIME_INCREMENT, 1)
 

@@ -238,6 +238,12 @@ def log_action_table():
     action_log = open('./action_table_log.txt', 'w+')
     action_log.write(str(Qlearning2inter.SATable))
 
+
+def log_q_value():
+    file = open('./qvalue_log.txt','a')
+    file.write('n: '+ str(Qlearning2inter.n) + ' SATable[0]: ' + str(Qlearning2inter.SATable[0][1:])+ ' SATable[1]: ' + str(Qlearning2inter.SATable[1][1:]) + ' SATable[7047]: ' + str(Qlearning2inter.SATable[7047][1:])+ ' SATable[20169]: '+ str(Qlearning2inter.SATable[20169][1:]) + ' SATable[33291]: ' + str(Qlearning2inter.SATable[33291][1:]))
+    file.write('\n')
+
 #map_init.map_init()
 #draw_map()
 #map_init.intersections[(1,1)].current_phase = 2
