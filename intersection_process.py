@@ -503,17 +503,14 @@ def process_one_lane(current_lane, current_inter_num, signal):
                     turn_left(current_car, opposite_left_lane, opposite_right_lane, current_inter, opposite_len,
                               left_target_lane, left_target_intersection, current_length, current_lane)
 
-            if current_car.turn == macros.RIGHT:
+            elif current_car.turn == macros.RIGHT:
                 if current_car.change_lane == 1:
                     change_lane(side_lane_num, current_car,current_inter,current_lane)
                     current_car.change_lane = 0
                 else:
                     turn_right(current_car, current_inter, right_target_lane, right_target_intersection, current_length, current_lane)
 
-            car_define.get_speed(current_car)
-            car_define.get_position(current_car)
-
-            if current_car.turn == macros.STRAIGHT:
+            elif current_car.turn == macros.STRAIGHT:
                 if current_car.position >= current_length + 12:
                     straight_target_inter = getattr(current_inter, straight_target)
                     if straight_target_inter:
@@ -525,6 +522,8 @@ def process_one_lane(current_lane, current_inter_num, signal):
                         current_car.next = None
                     else:
                         current_inter.cars_queue[current_lane] = None
+            car_define.get_speed(current_car)
+            car_define.get_position(current_car)
             current_car = next_car
 
     elif signal == macros.YELLOW:
@@ -536,7 +535,34 @@ def process_one_lane(current_lane, current_inter_num, signal):
                  macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR].index(current_lane)
             side_lane_num = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
                          macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL][i]
+
             if current_car.position > current_length:
+                if current_car.turn == macros.LEFT:
+                    if current_car.change_lane == 1:
+                        print("there's a bug yellow left")
+                        change_lane(side_lane_num, current_car, current_inter, current_lane)
+                        current_car.change_lane = 0
+                    else:
+                        turn_left(current_car, opposite_left_lane, opposite_right_lane, current_inter, opposite_len,
+                                  left_target_lane, left_target_intersection, current_length, current_lane)
+                elif current_car.turn == macros.RIGHT:
+                    if current_car.change_lane == 1:
+                        print("there's a bug yellow right")
+                        change_lane(side_lane_num, current_car, current_inter, current_lane)
+                        current_car.change_lane = 0
+                    else:
+                        turn_right(current_car, current_inter, right_target_lane, right_target_intersection, current_length, current_lane)
+                elif current_car.turn == macros.STRAIGHT:
+                    straight_target_inter = getattr(current_inter, straight_target)
+                    if straight_target_inter:
+                        straight_target_inter.append(current_lane, current_car)
+                        current_car.position = 0
+                    if current_car.next:
+                        current_inter.cars_queue[current_lane] = current_car.next
+                        current_car.next.prev = None
+                        current_car.next = None
+                    else:
+                        current_inter.cars_queue[current_lane] = None
                 current_car.acc = macros.ACCELERATION
 
             else:
@@ -565,20 +591,9 @@ def process_one_lane(current_lane, current_inter_num, signal):
 
             car_define.get_speed(current_car)
             car_define.get_position(current_car)
-
-            if current_car.position >= current_length + 12:
-                straight_target_inter = getattr(current_inter, straight_target)
-                if straight_target_inter:
-                    straight_target_inter.append(current_lane, current_car)
-                if current_car.next:
-                    current_inter.cars_queue[current_lane] = current_car.next
-                    current_car.position = 0
-                    current_car.next.prev = None
-                    current_car.next = None
             current_car = next_car
 
     elif signal == macros.RED:
-
         while current_car:
             next_car = current_car.next
             check_turn_and_change_lane(current_lane, current_inter_num, current_car)
@@ -588,6 +603,33 @@ def process_one_lane(current_lane, current_inter_num, signal):
                          macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL][i]
 
             if current_car.position > current_length:
+                if current_car.turn == macros.LEFT:
+                    if current_car.change_lane == 1:
+                        print("there's a bug red left")
+                        change_lane(side_lane_num, current_car, current_inter, current_lane)
+                        current_car.change_lane = 0
+                    else:
+                        turn_left(current_car, opposite_left_lane, opposite_right_lane, current_inter, opposite_len,
+                                  left_target_lane, left_target_intersection, current_length, current_lane)
+                elif current_car.turn == macros.RIGHT:
+                    if current_car.change_lane == 1:
+                        print("here's a bug red right")
+                        change_lane(side_lane_num, current_car, current_inter, current_lane)
+                        current_car.change_lane = 0
+                    else:
+                        turn_right(current_car, current_inter, right_target_lane, right_target_intersection,
+                                   current_length, current_lane)
+                elif current_car.turn == macros.STRAIGHT:
+                    straight_target_inter = getattr(current_inter, straight_target)
+                    if straight_target_inter:
+                        straight_target_inter.append(current_lane, current_car)
+                        current_car.position = 0
+                    if current_car.next:
+                        current_inter.cars_queue[current_lane] = current_car.next
+                        current_car.next.prev = None
+                        current_car.next = None
+                    else:
+                        current_inter.cars_queue[current_lane] = None
                 current_car.acc = macros.ACCELERATION
 
             if current_length - current_car.position > macros.DISTANCE_FROM_TRAFFIC_LIGHT:
@@ -616,15 +658,6 @@ def process_one_lane(current_lane, current_inter_num, signal):
 
             car_define.get_speed(current_car)
             car_define.get_position(current_car)
-            if current_car.position >= current_length + 12:
-                straight_target_inter = getattr(current_inter, straight_target)
-                if straight_target_inter:
-                    straight_target_inter.append(current_lane, current_car)
-                if current_car.next:
-                    current_inter.cars_queue[current_lane] = current_car.next
-                    current_car.position = 0
-                    current_car.next.prev = None
-                    current_car.next = None
             current_car = next_car
 
 
