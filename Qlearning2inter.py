@@ -101,11 +101,11 @@ SATable.append([i,0,0,0,0])
 
 def lane_threshold(a):
     "convert car length in a lane into thresholds 1-short 2-intermediate 3-long"
-    if a <= 6:
+    if a <= 5:
         return 1
-    elif (a > 6 and a < 16):
+    elif (a > 5 and a < 12):
         return 2
-    elif (a >= 16):
+    elif (a >= 12):
         return 3
 
 

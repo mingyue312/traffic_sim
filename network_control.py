@@ -100,7 +100,7 @@ def network_control():
                 #action[inter] = random.randint(0, 1)
                 #action[inter] = -1
             action = Qlearning2inter.qlearning(input_dict)   # pass in the queue_len dictionary to qlearning and get action dictionary back
-        if macros.SIM_TIME % 500 == 0:
+        if macros.SIM_TIME % 5000 == 0:
             visualization.draw_cars()
             visualization.draw_signal()
             visualization.log_action_table()
