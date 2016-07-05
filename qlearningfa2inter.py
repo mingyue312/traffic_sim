@@ -78,7 +78,7 @@ flag = 0
 prev_state = []
 prev_action = -1
 list_of_actiontodict = ["null",{(1,1):0, (1,2):0}, {(1,1):0, (1,2):1}, {(1,1):1, (1,2):0}, {(1,1):1, (1,2):1}]
-theta = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+theta = np.array( ((0),(0),(0),(0),(0),(0),(0),(0),(0),(0)) )
 # Initializing the State-Action Table
 # The table will be a list of lists. Each list element will contain:
 # [[5 digit state ID], q-value for action 0, q-value for action 1]
@@ -99,13 +99,13 @@ while i != [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]:
     checkfor3(i,9)
 SATable.append([i,0,0,0,0])
 
-
-def initialize_list_of_actiontodict(num_of_inter):
-
-
-def initialize(num_of_inter):
-    theta = num_of_inter*[0, 0, 0, 0, 0]
-    list_of_actiontodict = initialize_list_of_actiontodict(num_of_inter)
+#
+# def initialize_list_of_actiontodict(num_of_inter):
+#
+#
+# def initialize(num_of_inter):
+#     theta = num_of_inter*[0, 0, 0, 0, 0]
+#     list_of_actiontodict = initialize_list_of_actiontodict(num_of_inter)
 
 ######################
 # #Helper Functions:
@@ -142,6 +142,10 @@ def ObserveState(state_array):
              time_threshhold(time)]
     return state
 
+def merge(state1, state2):
+    #sigma = state
+    sigma = state1[0:4]+state2[0:4]+state1[4]+state2[4]
+    return sigma
 
 def findindex(state):
     "Given the state ID returns state index in the SATable"
@@ -173,6 +177,16 @@ def reward(state1, state2):
 def cost(state1):
     a = 1
     b = 1
+    c = 0
+    sumlanelength1 = 0
+    sumtime1 = 0
+    while c < 9:
+        for i in range(c, c + 4):  # 0,1,2,3 (0-4), 5,6,7,8 (5-9)
+            sumlanelength1 += state1[i]
+        sumtime1 += state1[c + 4]
+        c += 5
+    cost = a*(sumlanelength1) + b*(sumtime1)
+    return cost
 
 
 
@@ -195,15 +209,18 @@ def UpdateQvalue(state1, state2, action):
         flag = 1
     extraline = 1
 
-def UpdateQvaluefa(prev_state, cur_state):
+def UpdateQvaluefa(ps, cur_state):
+    #ps -> prev_state
     global SATable
     global theta
     global n
     global flag
     #cur_state is equal to sigma in the literture
     alpha = 1/(float(n))
-
-    theta += alpha*np.mat('')*
+    gamma = 0.9
+    cost = cost(ps)
+    sigma = np.array( ((ps[0]),(ps[1]),(ps[2]),(ps[3]),(ps[4]),(ps[5]),(ps[6]),(ps[7]),(ps[8]),(ps[9])) )
+    theta += alpha*sigma*( cost + gamma*() )
 
 
 
@@ -287,7 +304,7 @@ def qlearning(state_dict):
 
 def qlearningfa(state_dict):
     if (flag == 0):
-        cur_state = ObserveState(state_dict[(1, 1)]) + ObserveState(state_dict[(1, 2)]) # find combined state id
+        cur_state = merge(ObserveState(state_dict[(1, 1)]), ObserveState(state_dict[(1, 2)])) # find combined state id
         n+=1
         actionindex = takeAction(cur_state)
         action = list_of_actiontodict(actionindex)
