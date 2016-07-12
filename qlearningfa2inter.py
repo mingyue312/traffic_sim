@@ -1,114 +1,15 @@
 import random
 import numpy as np
+import copy
 
-"""
-2 intersections
-given a state in the simulation the agent must:
-1. Observe the state and store the state information.
-2. Lookup state in state action table
-3. Choose the action with most optimal Q-Value 90% chance. Choose random action 10% of times (Random action can be
-   taken using random number. Two possible actions in any given state: change light/don't change light.
-4. After a 5 second duration observe the state and update previous state-action Q-Value.
-5. Repeat steps 2 to 5 until simulation is complete. Analyze the state action table.
-
-Notes:
-    We will need a function to:
-    - Observe the current state
-        Input: Data stored in simulation (lane lengths and time lane has been red). Data can be stored as list
-        of lists or using tuples.
-        Output: list/tuple containing state ( i.e [[short,10sec], [short,10sec], ...] )
-        Remarks: Since we are considering one traffic junction we can label the lanes using numbers
-        (i.e lane0, lane1, ...) These will correspond to the indices in the list that is lane 0 will be
-        represented by the 0th element in the list.
-
-    - Max function
-        Input: Two Numbers
-        Output: Max number
-        Remarks: Returns the max number between two numbers
-
-    - Choose which action to take
-        Input: State
-        Output: Action
-        Remarks: Needs to search through to the S-A table to find the Q-Values for the action. Note that
-        there are two possible actions: change the lights, do not change the lights. Will choose action
-        with highest Q-Value 90% of time, and randomly 10% of the time based on state-action table.
-
-    - Update Q-Values
-        Input:
-        Output:
-        Remarks:
-
-    - Main function that continuously uses other functions to allow for Q-Learning
-        Inputs:
-        Outputs:
-        Remarks: At the end of this function if possible print the S-A table for analysis.
-
-
-    We will need:
-    - A state-action table which contains all actions for every state and will store its corresponding Q-Value.
-    This can be accomplished using a list of list. Can be made a global variable.
-    -
-
-Questions:
-    - How will time be simulated?
-
-Things to do:
-2. for observe state function find out how to get the state array
-3. make the initialization for SATable scalable
-4. Find a similar way (i.e. array) to get state information from simulation for larger networks
-5.
-
-
-input:
-{(1,1):[1,2,3,4,5,6,7,8,9], (1,2):[1,2,3,4,5,6,7,8,9]}
-I want to take this and convert it into:
-[1,2,3,4,5,6,7,8,9,10]
-
-i want to return
-e.g. {(1,1):1, (1,2):0}
-"""
-############################################################################################
-# Code Begins:
-
-# Initializing global variables
 SATable = []
-SATableoptimal = []
 n = 0
 flag = 0
 prev_state = []
 prev_action = -1
 list_of_actiontodict = ["null",{(1,1):0, (1,2):0}, {(1,1):0, (1,2):1}, {(1,1):1, (1,2):0}, {(1,1):1, (1,2):1}]
-theta = np.array( ((0),(0),(0),(0),(0),(0),(0),(0),(0),(0)) )
-# Initializing the State-Action Table
-# The table will be a list of lists. Each list element will contain:
-# [[5 digit state ID], q-value for action 0, q-value for action 1]
-# Note: action 0-> take no action; action 1-> change signal light
-def checkfor3(i,n):
-    if i[n] == 4:
-        i[n-1] += 1
-        i[n] = 1
-        checkfor3(i,n-1)
-
-i = [1, 1, 1, 1, 1,1, 1, 1, 1, 1]
-while i != [3, 3, 3, 3, 3, 3, 3, 3, 3, 3]:
-    j = []
-    for item in i:
-        j.append(item)
-    SATable.append([j,0,0,0,0])
-    i[9] += 1
-    checkfor3(i,9)
-SATable.append([i,0,0,0,0])
-
-#
-# def initialize_list_of_actiontodict(num_of_inter):
-#
-#
-# def initialize(num_of_inter):
-#     theta = num_of_inter*[0, 0, 0, 0, 0]
-#     list_of_actiontodict = initialize_list_of_actiontodict(num_of_inter)
-
-######################
-# #Helper Functions:
+a = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+theta = np.array( a )
 
 def lane_threshold(a):
     "convert car length in a lane into thresholds 1-short 2-intermediate 3-long"
@@ -119,6 +20,14 @@ def lane_threshold(a):
     elif (a >= 12):
         return 3
 
+def fa_lane_threshold(a):
+    "convert car length in a lane into thresholds 1-short 2-intermediate 3-long"
+    if a <= 5:
+        return 0
+    elif (a > 5 and a < 12):
+        return 0.5
+    elif (a >= 12):
+        return 1
 
 def time_threshhold(a):
     "convert time signal has been red into thresholds 1-short 2-intermediate 3-long"
@@ -129,10 +38,15 @@ def time_threshhold(a):
     elif (a > 8):
         return 3
 
+def fa_time_threshhold(a):
+    "convert time signal has been red into thresholds 1-short 2-intermediate 3-long"
+    if a <= 6:
+        return 0
+    else:
+        return 1
 
 def ObserveState(state_array):
-    "Given a state array - [number of cars in westr, westl, ..., eastl, eastr, red time] return the state ID"
-
+    "Given a state array - [number of cars in westr, westl, ..., eastl, eastr, red time, signal1,] return the state ID"
     lane1 = max(state_array[0], state_array[1])
     lane2 = max(state_array[2], state_array[3])
     lane3 = max(state_array[4], state_array[5])
@@ -142,9 +56,27 @@ def ObserveState(state_array):
              time_threshhold(time)]
     return state
 
-def merge(state1, state2):
-    #sigma = state
-    sigma = state1[0:4]+state2[0:4]+state1[4]+state2[4]
+def fa_ObserveState(state_array):
+    "Given a state array - [number of cars in westr, westl, ..., eastl, eastr, red time, signal1,] return the state ID"
+
+    lane1 = max(state_array[0], state_array[1])
+    lane2 = max(state_array[2], state_array[3])
+    lane3 = max(state_array[4], state_array[5])
+    lane4 = max(state_array[6], state_array[7])
+    time = state_array[8]
+    state = [fa_lane_threshold(lane1), fa_lane_threshold(lane2), fa_lane_threshold(lane3), fa_lane_threshold(lane4), \
+             fa_time_threshhold(time)]
+    return state
+
+def lanelights (int):
+    if int == 1:
+        return [1,1,0,0]
+    else:
+        return [0,0,1,1]
+
+def fa_merge(state1, state2):
+    global prev_action
+    sigma = state1[0:4]+state2[0:4]+state1[4]+state2[4]+lanelights(prev_action[(1,1)])+ lanelights(prev_action[(1,2)])
     return sigma
 
 def findindex(state):
@@ -174,17 +106,11 @@ def reward(state1, state2):
     reward = a * (sumlanelength1 - sumlanelength2) + b * (sumtime1 - sumtime2)
     return reward
 
-def cost(state1):
-    a = 1
-    b = 1
-    c = 0
-    sumlanelength1 = 0
-    sumtime1 = 0
-    while c < 9:
-        for i in range(c, c + 4):  # 0,1,2,3 (0-4), 5,6,7,8 (5-9)
-            sumlanelength1 += state1[i]
-        sumtime1 += state1[c + 4]
-        c += 5
+def fa_cost(state1):
+    a = 0.5
+    b = 0.5
+    sumlanelength = sum(state1[0:8])
+    sumtime = 2*(state1[8] + state1[9])
     cost = a*(sumlanelength1) + b*(sumtime1)
     return cost
 
@@ -211,23 +137,35 @@ def UpdateQvalue(state1, state2, action):
 
 def UpdateQvaluefa(ps, cur_state):
     #ps -> prev_state
-    global SATable
     global theta
     global n
     global flag
     #cur_state is equal to sigma in the literture
     alpha = 1/(float(n))
     gamma = 0.9
-    cost = cost(ps)
-    sigma = np.array( ((ps[0]),(ps[1]),(ps[2]),(ps[3]),(ps[4]),(ps[5]),(ps[6]),(ps[7]),(ps[8]),(ps[9])) )
-    theta += alpha*sigma*( cost + gamma*() )
+    cost = fa_cost(ps)
+    statecopy = copy.deepcopy(cur_state)
+    action_with_minqvalue = -1
+    min_q_value = 9999999999
+    for actionindex in range(1:5):
+        statecopy[10:18] = lanelights(list_of_actiontodict[actionindex][(1,1)])+lanelights(list_of_actiontodict[actionindex][(1,2)])
+        q_value = np.dot(theta, np.array(statecopy))
+        if q_value <= min_q_value:
+            min_q_value = q_value
+            action_with_minqvalue = actionindex
+    statecopy [10:18] = lanelights(list_of_actiontodict[action_with_minqvalue][(1,1)])+lanelights(list_of_actiontodict[action_with_minqvalue][(1,2)])
+    sigmacur = np.array( statecopy )
+    sigmapast = np.array( ps )
+    theta += alpha*sigmapast*( cost + gamma*(np.dot(theta,sigmacur)) - np.dot(theta, sigmapast))
+    if (n > 20000):
+        flag = 1
+    extraline = 1
 
 
 
 def takeAction(state1):
     "Decide which action to take based on optimal Q-Value with epsilon greedy algorithm"
     global SATable
-    global list_of_actiontodict
     a = random.random()
     if a <= 0.65:
         stateindex = findindex(state1)
@@ -249,6 +187,38 @@ def takeAction(state1):
         actionindex = random.randint(1,4)
         return actionindex
 
+def fa_takeAction(state):
+    global theta
+    global list_of_actiontodict
+    statecopy = copy.deepcopy(state)
+    a = random.random()
+    if a <= 0.65:
+        action_with_minqvalue = -1
+        min_q_value = 9999999999
+        for actionindex in range(1:5):
+            statecopy[10:18] = lanelights(list_of_actiontodict[actionindex][(1,1)])+lanelights(list_of_actiontodict[actionindex][(1,2)])
+            q_value = np.dot(theta, np.array(statecopy))
+            if q_value <= min_q_value:
+                min_q_value = q_value
+                action_with_minqvalue = actionindex
+        return action_with_minqvalue
+    else:
+        actionindex = random.randint(1, 4)
+        return actionindex
+
+def fa_actionoptimal(state):
+    global theta
+    global list_of_actiontodict
+    statecopy = copy.deepcopy(state)
+    action_with_minqvalue = -1
+    min_q_value = 9999999999
+    for actionindex in range(1:5):
+        statecopy[10:18] = lanelights(list_of_actiontodict[actionindex][(1,1)])+lanelights(list_of_actiontodict[actionindex][(1,2)])
+        q_value = np.dot(theta, np.array(statecopy))
+        if q_value <= min_q_value:
+            min_q_value = q_value
+            action_with_minqvalue = actionindex
+    return action_with_minqvalue
 
 def takeActionoptimal(state):
     global SATableoptimal
@@ -303,10 +273,21 @@ def qlearning(state_dict):
         return action
 
 def qlearningfa(state_dict):
+    global flag
+    global n
+    global prev_action
+    sigma = fa_merge(fa_ObserveState(state_dict[(1, 1)]), fa_ObserveState(state_dict[(1, 2)]))  # find combined state in [lane length, lane times,lane lights]
+    # cur state for each intersection west east north south
     if (flag == 0):
-        cur_state = merge(ObserveState(state_dict[(1, 1)]), ObserveState(state_dict[(1, 2)])) # find combined state id
         n+=1
-        actionindex = takeAction(cur_state)
+        actionindex = fa_takeAction(sigma)
         action = list_of_actiontodict(actionindex)
         if n != 1:
-            UpdateQvaluefa(prev_state, cur_state)
+            UpdateQvaluefa(prev_state, sigma)
+    elif flag == 1:
+        n+=1
+        actionindex = fa_actionoptimal(sigma)
+        action = list_of_actiontodict(actionindex)
+
+    prev_action = list_of_actiontodict[actionindex]
+    return action
