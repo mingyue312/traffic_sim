@@ -3,10 +3,10 @@ import macros
 import turtle
 import qlearning_helper
 import datetime
-import Qlearning2inter
+#import Qlearning2inter
 
 screen = turtle.Screen()
-screen.setworldcoordinates(0, -1100, 1400, 0)
+screen.setworldcoordinates(0, -1400, 1900, 0)
 board = turtle.Turtle()
 board.ht()
 board.speed(0)

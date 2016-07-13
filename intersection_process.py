@@ -101,9 +101,6 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
             if current_inter == current_car.my_path[i]:
                 next_inter = current_car.my_path[i + 1]
                 break
-            else:
-                print("A car is not on its path!!!!!!")
-                return -1
 
         if next_inter == (-1, -1):
             print('shit!!!!!!!')
@@ -193,7 +190,7 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
             elif next_inter[1] == current_inter[1] - 1:
                 current_car.turn = macros.LEFT
                 current_car.change_lane = 0
-            elif next_inter[0] == current_inter[0] + 1:
+            elif next_inter[0] == current_inter[0] - 1:
                 current_car.turn = macros.STRAIGHT
                 current_car.change_lane = 0
             else:
@@ -206,7 +203,7 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
             elif next_inter[1] == current_inter[1] - 1:
                 current_car.turn = macros.LEFT
                 current_car.change_lane = 1
-            elif next_inter[0] == current_inter[0] + 1:
+            elif next_inter[0] == current_inter[0] - 1:
                 current_car.turn = macros.STRAIGHT
                 current_car.change_lane = 0
             else:
@@ -237,6 +234,8 @@ def car_follow(current_car):
                 current_car.speed = macros.CRUISE_SPEED
                 current_car.acc = 0
 
+    if current_car.next == current_car or current_car.prev == current_car:
+        print('NEXT = CURRENT!!!!!!!')
 
 def change_lane(side_lane_num, car, inter, current_lane):
     # -1 means turn left
@@ -487,6 +486,8 @@ def process_one_lane(current_lane, current_inter_num, signal):
 
     if signal == macros.GREEN:
         while current_car:
+            if current_car == current_car.next:
+                current_car.next = None
             next_car = current_car.next
             check_turn_and_change_lane(current_lane, current_inter_num, current_car)
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
@@ -529,6 +530,8 @@ def process_one_lane(current_lane, current_inter_num, signal):
     elif signal == macros.YELLOW:
 
         while current_car:
+            if current_car == current_car.next:
+                current_car.next = None
             next_car = current_car.next
             check_turn_and_change_lane(current_lane, current_inter_num, current_car)
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
@@ -595,6 +598,8 @@ def process_one_lane(current_lane, current_inter_num, signal):
 
     elif signal == macros.RED:
         while current_car:
+            if current_car == current_car.next:
+                current_car.next = None
             next_car = current_car.next
             check_turn_and_change_lane(current_lane, current_inter_num, current_car)
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
