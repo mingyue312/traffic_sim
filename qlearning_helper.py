@@ -39,7 +39,7 @@ def get_first_coherence_list():
                     else:
                         coherence_list.append(-1)
             coherence_matrix.append(coherence_list)
-    return coherence_matrix
+    macros.prev_coherence_matrix = coherence_matrix
 
 
 def get_coherence_list():

@@ -23,7 +23,7 @@ SOUTHL = 7
 SOUTHR = 8
 INITSPEED = 15      #initial entering speed of 15 m/s
 FREQ = 8            #shorter = more frequent car entering
-WESTFREQ = 2
+WESTFREQ = 3
 
 NSGREEN_EWRED = 1
 NSYELLOW_EWRED = 2
@@ -54,3 +54,4 @@ LENGTHE_CAR = 3
 SCALE = 2
 
 prev_coherence_matrix = []
+clusters = {1:[(1,1), (1,2)], 2:[(1,3), (2,3)], 3:[(2,1), (2,2)]}

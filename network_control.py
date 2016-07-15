@@ -5,15 +5,15 @@ import macros
 import intersection_process
 import visualization
 import qlearning_helper
-#import Qlearning2inter
+import Qlearning_Scalable
 
 
 def network_control():
     action = {}
     input_dict = {}
     for inter in map_init.intersections:
-        #action[inter] = 1  # start with NSGREEN_WERED
-        action[inter] = -1
+        action[inter] = 1  # start with NSGREEN_WERED
+        #action[inter] = -1
     prev_action = action.copy()
 
     while macros.SIM_TIME <= macros.DURATION:
@@ -101,37 +101,38 @@ def network_control():
             intersection_process.intersection_process(inter)
             #visualization.log_avg_car_length(inter)
 
-        #if macros.SIM_TIME % 3 == 0:
-        #    prev_action = action.copy()
-        #    for inter in map_init.intersections:
-        #        queue_len = qlearning_helper.get_queue_len(inter)
-        #        if map_init.intersections[inter].current_phase in [macros.NSRED_EWYELLOW, macros.NSRED_EWGREEN]:
-        #            queue_len += [0, map_init.intersections[inter].timer]
-        #        elif map_init.intersections[inter].current_phase in [macros.NSYELLOW_EWRED, macros.NSGREEN_EWRED]:
-        #            queue_len += [map_init.intersections[inter].timer]
-        #        queue_len.append(map_init.intersections[inter].timer)
-        #        input_dict[inter] = queue_len
-        #        #action[inter] = random.randint(0, 1)
-        #        #action[inter] = -1
-        #    action = Qlearning2inter.optimalaction(input_dict)   # pass in the queue_len dictionary to qlearning and get action dictionary back
-        if macros.SIM_TIME % 15 == 0:
+        if macros.SIM_TIME % 3 == 0:
+            prev_action = action.copy()
+            for inter in map_init.intersections:
+                queue_len = qlearning_helper.get_queue_len(inter)
+                if map_init.intersections[inter].current_phase in [macros.NSRED_EWYELLOW, macros.NSRED_EWGREEN]:
+                    queue_len += [0, map_init.intersections[inter].timer]
+                elif map_init.intersections[inter].current_phase in [macros.NSYELLOW_EWRED, macros.NSGREEN_EWRED]:
+                    queue_len += [map_init.intersections[inter].timer, 0]
+                input_dict[inter] = queue_len
+                #action[inter] = random.randint(0, 1)
+                #action[inter] = -1
+            action = Qlearning_Scalable.qlearning(input_dict, macros.clusters)   # pass in the queue_len dictionary to qlearning and get action dictionary back
+        if macros.SIM_TIME % 5 == 0:
             visualization.draw_cars()
             visualization.draw_signal()
             #visualization.log_action_table()
             #visualization.log_q_value()
 
-        if macros.SIM_TIME == 30:
-            macros.prev_coherence_matrix = qlearning_helper.get_first_coherence_list()
-            print(macros.prev_coherence_matrix)
-        if 35 <= macros.SIM_TIME <= 300 and macros.SIM_TIME % 5 == 0:
-            qlearning_helper.get_coherence_list()
-            print(macros.prev_coherence_matrix)
+        #if macros.SIM_TIME == 30:
+        #    qlearning_helper.get_first_coherence_list()
+        #    print(macros.prev_coherence_matrix)
+        #if 35 <= macros.SIM_TIME <= 300 and macros.SIM_TIME % 5 == 0:
+        #    qlearning_helper.get_coherence_list()
+        #    print(macros.prev_coherence_matrix)
+        if macros.SIM_TIME == 300:
+            print('DONE!')
 
         macros.SIM_TIME = round(macros.SIM_TIME + macros.TIME_INCREMENT, 1)
 
 
 map_init.map_init()
-visualization.draw_map()
+#visualization.draw_map()
 visualization.log_init()
 visualization.draw_signal()
 network_control()

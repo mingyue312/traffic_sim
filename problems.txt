@@ -1,3 +1,4 @@
 how to take traffic signals as input?
 how to make size of map sizable? should start with fixed size?
 how to make # lane sizable?
+<class 'list'>: <Too big to print. Len: 6561>

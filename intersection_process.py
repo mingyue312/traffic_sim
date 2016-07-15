@@ -488,6 +488,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
         while current_car:
             if current_car == current_car.next:
                 current_car.next = None
+                current_car.prev = None
             next_car = current_car.next
             check_turn_and_change_lane(current_lane, current_inter_num, current_car)
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
@@ -512,17 +513,28 @@ def process_one_lane(current_lane, current_inter_num, signal):
                     turn_right(current_car, current_inter, right_target_lane, right_target_intersection, current_length, current_lane)
 
             elif current_car.turn == macros.STRAIGHT:
-                if current_car.position >= current_length + 12:
+                if current_car.position >= current_length:
                     straight_target_inter = getattr(current_inter, straight_target)
                     if straight_target_inter:
                         straight_target_inter.append(current_lane, current_car)
-                        current_car.position = current_car.position - current_length - 12
+                        current_car.position = 0
                     if current_car.next:
                         current_inter.cars_queue[current_lane] = current_car.next
                         current_car.next.prev = None
                         current_car.next = None
                     else:
                         current_inter.cars_queue[current_lane] = None
+                #if current_car.position >= current_length + 12:
+                #    straight_target_inter = getattr(current_inter, straight_target)
+                #    if straight_target_inter:
+                #        straight_target_inter.append(current_lane, current_car)
+                #        current_car.position = current_car.position - current_length - 12
+                #    if current_car.next:
+                #        current_inter.cars_queue[current_lane] = current_car.next
+                #        current_car.next.prev = None
+                #        current_car.next = None
+                #    else:
+                #        current_inter.cars_queue[current_lane] = None
             car_define.get_speed(current_car)
             car_define.get_position(current_car)
             current_car = next_car
@@ -532,6 +544,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
         while current_car:
             if current_car == current_car.next:
                 current_car.next = None
+                current_car.prev = None
             next_car = current_car.next
             check_turn_and_change_lane(current_lane, current_inter_num, current_car)
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
@@ -600,6 +613,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
         while current_car:
             if current_car == current_car.next:
                 current_car.next = None
+                current_car.prev = None
             next_car = current_car.next
             check_turn_and_change_lane(current_lane, current_inter_num, current_car)
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
