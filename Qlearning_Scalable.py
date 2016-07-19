@@ -141,6 +141,7 @@ def UpdateQvalue(state1, state2, action, SATable, c, n, c_num):
     SATable[c][index1][action] = round(((1 - alpha) * (SATable[c][index1][action]) + alpha * (reward(state1, state2, c_num) + \
                                   gamma * (max(SATable[c][index2][1], SATable[c][index2][2], SATable[c][index2][3], \
                                                SATable[c][index2][4])))),10)
+    print(str(state1) +' '+ str(action) +' '+ str(c) +' '+ str(n))
     print(SATable[c][index1][action])
 
 
