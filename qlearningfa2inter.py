@@ -5,10 +5,10 @@ import copy
 SATable = []
 n = 0
 flag = 0
-prev_state = []
-prev_action = -1
+prev_state = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+prev_action = {(1,1):1, (1,2):1}
 list_of_actiontodict = ["null",{(1,1):0, (1,2):0}, {(1,1):0, (1,2):1}, {(1,1):1, (1,2):0}, {(1,1):1, (1,2):1}]
-a = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+a = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 theta = np.array( a )
 
 def lane_threshold(a):
@@ -76,7 +76,7 @@ def lanelights (int):
 
 def fa_merge(state1, state2):
     global prev_action
-    sigma = state1[0:4]+state2[0:4]+state1[4]+state2[4]+lanelights(prev_action[(1,1)])+ lanelights(prev_action[(1,2)])
+    sigma = state1[0:4]+state2[0:4]+state1[4:5]+state2[4:5]+lanelights(prev_action[(1,1)])+ lanelights(prev_action[(1,2)])
     return sigma
 
 def findindex(state):
@@ -111,7 +111,7 @@ def fa_cost(state1):
     b = 0.5
     sumlanelength = sum(state1[0:8])
     sumtime = 2*(state1[8] + state1[9])
-    cost = a*(sumlanelength1) + b*(sumtime1)
+    cost = a*(sumlanelength) + b*(sumtime)
     return cost
 
 
@@ -141,13 +141,13 @@ def UpdateQvaluefa(ps, cur_state):
     global n
     global flag
     #cur_state is equal to sigma in the literture
-    alpha = 1/(float(n))
+    alpha = 1/(float(n**0.51))
     gamma = 0.9
     cost = fa_cost(ps)
     statecopy = copy.deepcopy(cur_state)
     action_with_minqvalue = -1
     min_q_value = 9999999999
-    for actionindex in range(1:5):
+    for actionindex in range(1,5):
         statecopy[10:18] = lanelights(list_of_actiontodict[actionindex][(1,1)])+lanelights(list_of_actiontodict[actionindex][(1,2)])
         q_value = np.dot(theta, np.array(statecopy))
         if q_value <= min_q_value:
@@ -156,7 +156,7 @@ def UpdateQvaluefa(ps, cur_state):
     statecopy [10:18] = lanelights(list_of_actiontodict[action_with_minqvalue][(1,1)])+lanelights(list_of_actiontodict[action_with_minqvalue][(1,2)])
     sigmacur = np.array( statecopy )
     sigmapast = np.array( ps )
-    theta += alpha*sigmapast*( cost + gamma*(np.dot(theta,sigmacur)) - np.dot(theta, sigmapast))
+    theta = theta + alpha*sigmapast*( cost + gamma*(np.dot(theta,sigmacur) - np.dot(theta, sigmapast)))
     if (n > 20000):
         flag = 1
     extraline = 1
@@ -190,12 +190,12 @@ def takeAction(state1):
 def fa_takeAction(state):
     global theta
     global list_of_actiontodict
-    statecopy = copy.deepcopy(state)
     a = random.random()
     if a <= 0.65:
+        statecopy = copy.deepcopy(state)
         action_with_minqvalue = -1
         min_q_value = 9999999999
-        for actionindex in range(1:5):
+        for actionindex in range(1,5):
             statecopy[10:18] = lanelights(list_of_actiontodict[actionindex][(1,1)])+lanelights(list_of_actiontodict[actionindex][(1,2)])
             q_value = np.dot(theta, np.array(statecopy))
             if q_value <= min_q_value:
@@ -212,7 +212,7 @@ def fa_actionoptimal(state):
     statecopy = copy.deepcopy(state)
     action_with_minqvalue = -1
     min_q_value = 9999999999
-    for actionindex in range(1:5):
+    for actionindex in range(1,5):
         statecopy[10:18] = lanelights(list_of_actiontodict[actionindex][(1,1)])+lanelights(list_of_actiontodict[actionindex][(1,2)])
         q_value = np.dot(theta, np.array(statecopy))
         if q_value <= min_q_value:
@@ -276,18 +276,20 @@ def qlearningfa(state_dict):
     global flag
     global n
     global prev_action
+    global prev_state
     sigma = fa_merge(fa_ObserveState(state_dict[(1, 1)]), fa_ObserveState(state_dict[(1, 2)]))  # find combined state in [lane length, lane times,lane lights]
     # cur state for each intersection west east north south
     if (flag == 0):
         n+=1
         actionindex = fa_takeAction(sigma)
-        action = list_of_actiontodict(actionindex)
+        action = list_of_actiontodict[actionindex]
         if n != 1:
             UpdateQvaluefa(prev_state, sigma)
     elif flag == 1:
         n+=1
         actionindex = fa_actionoptimal(sigma)
-        action = list_of_actiontodict(actionindex)
+        action = list_of_actiontodict[actionindex]
 
     prev_action = list_of_actiontodict[actionindex]
+    prev_state = sigma
     return action

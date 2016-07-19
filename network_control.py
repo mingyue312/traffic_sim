@@ -5,7 +5,7 @@ import macros
 import intersection_process
 import visualization
 import qlearning_helper
-import Qlearning2inter
+import qlearningfa2inter
 
 
 def network_control():
@@ -99,7 +99,7 @@ def network_control():
                 input_dict[inter] = queue_len
                 #action[inter] = random.randint(0, 1)
                 #action[inter] = -1
-            action = Qlearning2inter.optimalaction(input_dict)   # pass in the queue_len dictionary to qlearning and get action dictionary back
+            action = qlearningfa2inter.qlearningfa(input_dict)   # pass in the queue_len dictionary to qlearning and get action dictionary back
         if macros.SIM_TIME % 3000 == 0:
             visualization.draw_cars()
             visualization.draw_signal()
