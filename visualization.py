@@ -3,7 +3,7 @@ import macros
 import turtle
 import qlearning_helper
 import datetime
-#import Qlearning2inter
+import Qlearning_Scalable
 
 screen = turtle.Screen()
 screen.setworldcoordinates(0, -1400, 1900, 0)
@@ -236,7 +236,7 @@ def log_avg_car_length(internum):
 
 def log_action_table():
     action_log = open('./action_table_log.txt', 'w+')
-    action_log.write(str(Qlearning2inter.SATable))
+    action_log.write(str(Qlearning_Scalable.SATable))
     action_log.close()
 
 
