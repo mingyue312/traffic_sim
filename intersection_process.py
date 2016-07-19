@@ -104,6 +104,8 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
 
         if next_inter == (-1, -1):
             print('shit!!!!!!!')
+            current_car.prev.next = current_car.next
+            current_car.next.prev = current_car.prev
 
         if current_lane == macros.WESTL:
             if next_inter[0] == current_inter[0] + 1:
