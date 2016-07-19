@@ -8,7 +8,13 @@ import qlearning_helper
 import Qlearning_Scalable
 
 
+prev_state_global = [[],[],[]]
+cur_state_global = [[],[],[]]
+prev_action_global = [-1,-1,-1]
+n_global = [0,0,0]
+
 def network_control():
+   
     action = {}
     input_dict = {}
     for inter in map_init.intersections:
@@ -99,7 +105,7 @@ def network_control():
 
             # Following block processes each intersection's car movements:
             intersection_process.intersection_process(inter)
-            #visualization.log_avg_car_length(inter)
+            visualization.log_avg_car_length(inter)
 
         if macros.SIM_TIME % 3 == 0:
             prev_action = action.copy()
@@ -112,8 +118,8 @@ def network_control():
                 input_dict[inter] = queue_len
                 #action[inter] = random.randint(0, 1)
                 #action[inter] = -1
-            action = Qlearning_Scalable.qlearning(input_dict, macros.clusters)   # pass in the queue_len dictionary to qlearning and get action dictionary back
-        if macros.SIM_TIME % 5 == 0:
+            action = Qlearning_Scalable.qlearning(input_dict, macros.clusters,prev_state_global,cur_state_global,prev_action_global,n_global)   # pass in the queue_len dictionary to qlearning and get action dictionary back
+        if macros.SIM_TIME % 100 == 0:
             visualization.draw_cars()
             visualization.draw_signal()
             #visualization.log_action_table()
@@ -125,14 +131,14 @@ def network_control():
         #if 35 <= macros.SIM_TIME <= 300 and macros.SIM_TIME % 5 == 0:
         #    qlearning_helper.get_coherence_list()
         #    print(macros.prev_coherence_matrix)
-        if macros.SIM_TIME == 300:
-            print('DONE!')
+        if macros.SIM_TIME == 100:
+            visualization.log_action_table()
 
         macros.SIM_TIME = round(macros.SIM_TIME + macros.TIME_INCREMENT, 1)
 
 
 map_init.map_init()
-#visualization.draw_map()
+visualization.draw_map()
 visualization.log_init()
 visualization.draw_signal()
 network_control()

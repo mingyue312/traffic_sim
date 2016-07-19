@@ -5,6 +5,7 @@
 
 import random
 import math
+#import network_control
 
 def checkfor1(i,n):
     if i[n] == 2:
@@ -52,14 +53,14 @@ def create_table(clusters, SATable):
     for key in clusters:
         SATable[key] = []
         num_intersection = len(clusters[key])
-        i = [1]*4*num_intersection
-        while (i != [3] * 4 * num_intersection):
+        i = [1]*6*num_intersection
+        while (i != [3] * 6 * num_intersection):
             j = []
             for item in i:
                 j.append(item)
             SATable[key].append([j] + [0] * (2 ** num_intersection))
-            i[4 * num_intersection - 1] += 1
-            checkfor3(i, 4 * num_intersection - 1)
+            i[6 * num_intersection - 1] += 1
+            checkfor3(i, 6 * num_intersection - 1)
         SATable[key].append([i] + [0] * (2 ** num_intersection))
 
 
@@ -96,7 +97,7 @@ def ObserveState(state_array):
     lane4 = max(state_array[6], state_array[7])
     time1 = state_array[8]
     time2 = state_array[9]
-    state = [lane_threshold(lane1) + lane_threshold(lane2), lane_threshold(lane3) + lane_threshold(lane4), \
+    state = [lane_threshold(lane1), lane_threshold(lane2), lane_threshold(lane3), lane_threshold(lane4), \
              time_threshhold(time1), time_threshhold(time2)]
     return state
 
@@ -104,8 +105,8 @@ def ObserveState(state_array):
 def findindex(state, num_intersection):
 
     index = 0
-    for i in range(0, 4*num_intersection):
-        index += (3 ** (4*num_intersection - 1 - i)) * (state[i] - 1)
+    for i in range(0, 6*num_intersection):
+        index += (3 ** (6*num_intersection - 1 - i)) * (state[i] - 1)
     return index
 
 
@@ -118,20 +119,20 @@ def reward(state1, state2, num_intersection):
     sumlanelength2 = 0
     sumtime1 = 0
     sumtime2 = 0
-    while c < 4*num_intersection:
-        for i in range(c, c+2): #0,1,2,3 (0-4), 5,6,7,8 (5-9)
+    while c < 6*num_intersection:
+        for i in range(c, c+4):
             sumlanelength1 += state1[i]
             sumlanelength2 += state2[i]
-        sumtime1 += state1[c+2]
-        sumtime1 += state1[c+3]
-        sumtime2 += state2[c+2]
-        sumtime2 += state2[c+3]
-        c += 4
+        sumtime1 += state1[c+4]
+        sumtime1 += state1[c+5]
+        sumtime2 += state2[c+4]
+        sumtime2 += state2[c+5]
+        c += 6
     reward = a * (sumlanelength1 - sumlanelength2) + b * (sumtime1 - sumtime2)
     return reward
 
 
-def UpdateQvalue(state1, state2, action, num_inter, SATable, c, n, c_num):
+def UpdateQvalue(state1, state2, action, SATable, c, n, c_num):
 
     index1 = findindex(state1, c_num)
     index2 = findindex(state2, c_num)
@@ -140,10 +141,10 @@ def UpdateQvalue(state1, state2, action, num_inter, SATable, c, n, c_num):
     SATable[c][index1][action] = round(((1 - alpha) * (SATable[c][index1][action]) + alpha * (reward(state1, state2, c_num) + \
                                   gamma * (max(SATable[c][index2][1], SATable[c][index2][2], SATable[c][index2][3], \
                                                SATable[c][index2][4])))),10)
+    print(SATable[c][index1][action])
 
 
-
-def takeAction(state1, num_intersection, SATable, c, c_num):
+def takeAction(state1, SATable, c, c_num):
     "Decide which action to take based on optimal Q-Value with epsilon greedy algorithm"
 
     a = random.random()
@@ -176,9 +177,7 @@ list_of_actiontodict = {1:['null', {(1, 2): 0, (1, 1): 0}, {(1, 2): 1, (1, 1): 0
                          {(2, 2): 1, (2, 1): 1}]}
 num_intersections = 0
 a = 0
-prev_state = []
-cur_state = []
-prev_action = -1
+
 
 def init_qlearning(clusters):
     global SATable
@@ -196,37 +195,36 @@ def init_qlearning(clusters):
 
 
 
-def qlearning(state_dict, clusters):
+def qlearning(state_dict, clusters,prev_state_global,cur_state_global,prev_action_global, n_global):
     global SATable
-    global n
     global list_of_actiontodict
-    global num_intersections
-    global a
-    global prev_state
-    global cur_state
-    global prev_action
+
+
+     
     init_qlearning(clusters)
     actions = {}
-    c = 1
+    
     for key in clusters:
-
+        
         states = []
-
+        
         for e in clusters[key]:
             states.append(ObserveState(state_dict[e]))
 
-        n+=1
+        n_global[key-1]+=1
+        temp_states = []
         for e in states:
-            cur_state += e
-        actionindex = takeAction(cur_state, num_intersections, SATable, c, len(clusters[key]))
+            temp_states += e
+        cur_state_global[key-1] = temp_states
+        actionindex = takeAction(cur_state_global[key-1], SATable, key, len(clusters[key]))
         action = list_of_actiontodict[key][actionindex]
-        if n != 1:
-            UpdateQvalue(prev_state, cur_state, prev_action, num_intersections, SATable, c, n, len(clusters[key]))
-        prev_state = cur_state
-        prev_action = actionindex
+        if prev_state_global[key-1] != []:
+            UpdateQvalue(prev_state_global[key-1], cur_state_global[key-1], prev_action_global[key-1], SATable, key, n_global[key-1], len(clusters[key]))
+        prev_state_global[key-1] = cur_state_global[key-1]
+        prev_action_global[key-1] = actionindex
         for k in action:
             actions[k] = action[k]
-        c += 1
+
 
     return actions    
 
