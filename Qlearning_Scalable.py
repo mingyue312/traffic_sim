@@ -70,21 +70,21 @@ def create_table(clusters, SATable):
 
 def lane_threshold(a):
     "convert car length in a lane into thresholds 1-short 2-intermediate 3-long"
-    if a <= 6:
+    if a <= 3:
         return 1
-    elif (a > 6 and a < 16):
+    elif (a > 3 and a < 6):
         return 2
-    elif (a >= 16):
+    elif (a >= 6):
         return 3
 
 
 def time_threshhold(a):
     "convert time signal has been red into thresholds 1-short 2-intermediate 3-long"
-    if a <= 4:
+    if a <= 10:
         return 1
-    elif (a > 4 and a <= 8):
+    elif (a > 10 and a <= 20):
         return 2
-    elif (a > 8):
+    elif (a > 20):
         return 3
 
 
@@ -202,7 +202,7 @@ def qlearning(state_dict, clusters,prev_state_global,cur_state_global,prev_actio
 
 
      
-    init_qlearning(clusters)
+    #init_qlearning(clusters)
     actions = {}
     
     for key in clusters:

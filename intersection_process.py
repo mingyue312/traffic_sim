@@ -104,8 +104,7 @@ def check_turn_and_change_lane(current_lane, current_inter, current_car):
 
         if next_inter == (-1, -1):
             print('shit!!!!!!!')
-            current_car.prev.next = current_car.next
-            current_car.next.prev = current_car.prev
+            return -1
 
         if current_lane == macros.WESTL:
             if next_inter[0] == current_inter[0] + 1:
@@ -238,6 +237,8 @@ def car_follow(current_car):
 
     if current_car.next == current_car or current_car.prev == current_car:
         print('NEXT = CURRENT!!!!!!!')
+        return -1
+    return
 
 def change_lane(side_lane_num, car, inter, current_lane):
     # -1 means turn left
@@ -491,14 +492,27 @@ def process_one_lane(current_lane, current_inter_num, signal):
             if current_car == current_car.next:
                 current_car.next = None
                 current_car.prev = None
+                current_car = None
+                current_inter.cars_queue[current_lane] = None
+                continue
             next_car = current_car.next
-            check_turn_and_change_lane(current_lane, current_inter_num, current_car)
+            if check_turn_and_change_lane(current_lane, current_inter_num, current_car) == -1:
+                current_car.next = None
+                current_car.prev = None
+                current_car = None
+                current_inter.cars_queue[current_lane] = None
+                continue
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
                  macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR].index(current_lane)
             side_lane_num = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
                          macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL][i]
 
-            car_follow(current_car)
+            if car_follow(current_car) == -1:
+                current_car.next = None
+                current_car.prev = None
+                current_car = None
+                current_inter.cars_queue[current_lane] = None
+                continue
             if current_car.turn == macros.LEFT:
                 if current_car.change_lane == 1:
                     change_lane(side_lane_num, current_car,current_inter,current_lane)
@@ -547,8 +561,16 @@ def process_one_lane(current_lane, current_inter_num, signal):
             if current_car == current_car.next:
                 current_car.next = None
                 current_car.prev = None
+                current_car = None
+                current_inter.cars_queue[current_lane] = None
+                continue
             next_car = current_car.next
-            check_turn_and_change_lane(current_lane, current_inter_num, current_car)
+            if check_turn_and_change_lane(current_lane, current_inter_num, current_car) == -1:
+                current_car.next = None
+                current_car.prev = None
+                current_car = None
+                current_inter.cars_queue[current_lane] = None
+                continue
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
                  macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR].index(current_lane)
             side_lane_num = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
@@ -585,7 +607,12 @@ def process_one_lane(current_lane, current_inter_num, signal):
 
             else:
                 if current_length - current_car.position > macros.DISTANCE_FROM_TRAFFIC_LIGHT:
-                    car_follow(current_car)
+                    if car_follow(current_car) == -1:
+                        current_car.next = None
+                        current_car.prev = None
+                        current_car = None
+                        current_inter.cars_queue[current_lane] = None
+                        continue
 
                 else:
                     if not current_car.prev or current_car.prev.position > current_length:
@@ -616,8 +643,16 @@ def process_one_lane(current_lane, current_inter_num, signal):
             if current_car == current_car.next:
                 current_car.next = None
                 current_car.prev = None
+                current_car = None
+                current_inter.cars_queue[current_lane] = None
+                continue
             next_car = current_car.next
-            check_turn_and_change_lane(current_lane, current_inter_num, current_car)
+            if check_turn_and_change_lane(current_lane, current_inter_num, current_car) == -1:
+                current_car.next = None
+                current_car.prev = None
+                current_car = None
+                current_inter.cars_queue[current_lane] = None
+                continue
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
                  macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR].index(current_lane)
             side_lane_num = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
@@ -654,7 +689,12 @@ def process_one_lane(current_lane, current_inter_num, signal):
                 current_car.acc = macros.ACCELERATION
 
             if current_length - current_car.position > macros.DISTANCE_FROM_TRAFFIC_LIGHT:
-                car_follow(current_car)
+                if car_follow(current_car) == -1:
+                    current_car.next = None
+                    current_car.prev = None
+                    current_car = None
+                    current_inter.cars_queue[current_lane] = None
+                    continue
 
             else:
                 if not current_car.prev or current_car.prev.position > current_length:
@@ -701,5 +741,7 @@ def intersection_process(inter_num):
     for i in range(1, 9):
         signal = dic[inter.current_phase][i]
         process_one_lane(i, inter_num, signal)
+        if map_init.intersections[inter_num].cars_queue[i]:
+            map_init.intersections[inter_num].cars_queue[i].prev = None
     return
 

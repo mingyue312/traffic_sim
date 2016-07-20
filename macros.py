@@ -22,7 +22,7 @@ NORTHR = 6
 SOUTHL = 7
 SOUTHR = 8
 INITSPEED = 15      #initial entering speed of 15 m/s
-FREQ = 8            #shorter = more frequent car entering
+FREQ = 6            #shorter = more frequent car entering
 WESTFREQ = 3
 
 NSGREEN_EWRED = 1
