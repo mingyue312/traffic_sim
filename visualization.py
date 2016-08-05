@@ -6,7 +6,7 @@ import datetime
 import Qlearning_Scalable
 
 screen = turtle.Screen()
-screen.setworldcoordinates(0, -1400, 1900, 0)
+screen.setworldcoordinates(0, -2200, 2200, 0)
 board = turtle.Turtle()
 board.ht()
 board.speed(0)
