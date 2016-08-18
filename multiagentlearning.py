@@ -1,7 +1,7 @@
 import random
 import numpy as np
 
-k = 0 #k is a timestep counter
+k = 1 #k is a timestep counter
 numofinter = 9
 numofneighbours = 3
 numofstates = 1296
@@ -54,15 +54,15 @@ def findactionindex(actiontuple):
     return index
 
 def lanethreshold(int):
-    if int < 6:
+    if int < 4:
         return 0
-    elif int < 12:
+    elif int < 8:
         return 0.5
     else:
         return 1
 
 def timethreshold(int):
-    if int < 5:
+    if int < 10:
         return 0
     else:
         return 1
@@ -204,7 +204,7 @@ def qlearning(state_dict):
                 updateQ(i, j, findindex(prevjointstate), jointstate_and_action_tuple[1],max_expectedqvalue,reward)
 
         #Take action
-        if k <= 20000:
+        if k <= 2000:
             epsilon = random.random()
             if epsilon < 0.6:
                 maxvalue = -9999999

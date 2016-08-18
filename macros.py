@@ -1,5 +1,5 @@
 CRITICAL_GAP = 1
-DURATION = 3600
+DURATION = 10000
 HOR_DIM = [250, 250, 250, 250]
 VER_DIM = [250, 250, 250, 250]
 LANE_WIDTH = 3
@@ -22,8 +22,8 @@ NORTHR = 6
 SOUTHL = 7
 SOUTHR = 8
 INITSPEED = 15      #initial entering speed of 15 m/s
-FREQ = 8            #shorter = more frequent car entering
-WESTFREQ = 4
+FREQ = 6            #shorter = more frequent car entering
+WESTFREQ = 3
 
 NSGREEN_EWRED = 1
 NSYELLOW_EWRED = 2

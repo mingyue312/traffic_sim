@@ -488,20 +488,25 @@ def process_one_lane(current_lane, current_inter_num, signal):
     current_length = getattr(current_inter, current_len)
 
     if signal == macros.GREEN:
+        n=0
         while current_car:
+            n+=1
+            if n >= 40:
+                current_inter.cars_queue[current_lane] = None
+                return
             if current_car == current_car.next:
                 current_car.next = None
                 current_car.prev = None
                 current_car = None
                 current_inter.cars_queue[current_lane] = None
-                continue
+                return
             next_car = current_car.next
             if check_turn_and_change_lane(current_lane, current_inter_num, current_car) == -1:
                 current_car.next = None
                 current_car.prev = None
                 current_car = None
                 current_inter.cars_queue[current_lane] = None
-                continue
+                return
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
                  macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR].index(current_lane)
             side_lane_num = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
@@ -556,21 +561,25 @@ def process_one_lane(current_lane, current_inter_num, signal):
             current_car = next_car
 
     elif signal == macros.YELLOW:
-
+        n=0
         while current_car:
+            n += 1
+            if n >= 40:
+                current_inter.cars_queue[current_lane] = None
+                return
             if current_car == current_car.next:
                 current_car.next = None
                 current_car.prev = None
                 current_car = None
                 current_inter.cars_queue[current_lane] = None
-                continue
+                return
             next_car = current_car.next
             if check_turn_and_change_lane(current_lane, current_inter_num, current_car) == -1:
                 current_car.next = None
                 current_car.prev = None
                 current_car = None
                 current_inter.cars_queue[current_lane] = None
-                continue
+                return
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
                  macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR].index(current_lane)
             side_lane_num = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
@@ -612,7 +621,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
                         current_car.prev = None
                         current_car = None
                         current_inter.cars_queue[current_lane] = None
-                        continue
+                        return
 
                 else:
                     if not current_car.prev or current_car.prev.position > current_length:
@@ -639,20 +648,25 @@ def process_one_lane(current_lane, current_inter_num, signal):
             current_car = next_car
 
     elif signal == macros.RED:
+        n=0
         while current_car:
+            n += 1
+            if n >= 40:
+                current_inter.cars_queue[current_lane] = None
+                return
             if current_car == current_car.next:
                 current_car.next = None
                 current_car.prev = None
                 current_car = None
                 current_inter.cars_queue[current_lane] = None
-                continue
+                return
             next_car = current_car.next
             if check_turn_and_change_lane(current_lane, current_inter_num, current_car) == -1:
                 current_car.next = None
                 current_car.prev = None
                 current_car = None
                 current_inter.cars_queue[current_lane] = None
-                continue
+                return
             i = [macros.WESTL, macros.EASTL, macros.NORTHL, macros.SOUTHL,
                  macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR].index(current_lane)
             side_lane_num = [macros.WESTR, macros.EASTR, macros.NORTHR, macros.SOUTHR,
@@ -694,7 +708,7 @@ def process_one_lane(current_lane, current_inter_num, signal):
                     current_car.prev = None
                     current_car = None
                     current_inter.cars_queue[current_lane] = None
-                    continue
+                    return
 
             else:
                 if not current_car.prev or current_car.prev.position > current_length:

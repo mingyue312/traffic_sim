@@ -118,11 +118,15 @@ def network_control():
                 input_dict[inter] = queue_len
                 #action[inter] = random.randint(0, 1)
             action = multiagentlearning.qlearning(input_dict) #(prev_state_global,cur_state_global,prev_action_global,n_global)   # pass in the queue_len dictionary to qlearning and get action dictionary back
-        if macros.SIM_TIME % 100 == 0:
+        if macros.SIM_TIME % 1000 == 0:
             visualization.draw_cars()
             visualization.draw_signal()
             #visualization.log_action_table()
             #visualization.log_q_value()
+        if macros.SIM_TIME == 6000:
+            print('6000')
+        if macros.SIM_TIME == 8000:
+            print('8000')
 
         #if macros.SIM_TIME == 30:
         #    qlearning_helper.get_first_coherence_list()
