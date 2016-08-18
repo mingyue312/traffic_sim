@@ -103,7 +103,6 @@ def updateCount(agentindex, neighbourindex, prevstateindex, neighactionindex):
     global Countmatrices
     global agents
 
-    k +=1
     Countmatrices[(agents[agentindex], agents[neighbourindex])][prevstateindex][neighactionindex] += 1
     return
 
@@ -174,6 +173,7 @@ def qlearning(state_dict):
     global prevaction
     global prevstate
     global agents
+    global k
 
     action_dict = {}
     for i in range(0,numofinter):
@@ -266,5 +266,6 @@ def qlearning(state_dict):
             action_dict[agents[i]] = curaction
             prevaction[agents[i]] = curaction
             prevstate[agents[i]] = jointstate_and_action_tuple[0][0:4]
+    k += 1
     return action_dict
 
