@@ -1,12 +1,16 @@
 import random
 import numpy as np
 
+'''
+things to do:
+rewrite adj matrix
+'''
 k = 0 #k is a timestep counter
-numofinter = 9
+numofinter = 25
 numofneighbours = 3
 numofstates = 1296
 #i will have a dictionary like so: {(1,1):[1,2,3,4], (1,2):[1,2,3,4]}
-agents = [(1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3)]
+agents = [(1,1),(1,2),(1,3),(1,4),(1,5),(2,1),(2,2),(2,3),(2,4),(2,5),(3,1),(3,2),(3,3),(3,4),(3,5)]
 adjmat = [[0,1,0,0,0,0,0,0,0],[1,0,1,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,0,0,0,0,1,0,0],[0,0,0,0,0,1,0,0,0],[0,0,0,0,1,0,0,0,1],[0,0,0,1,0,0,0,1,0],[0,0,0,0,0,0,1,0,0],[0,0,0,0,0,1,0,0,0]]
 Mmatrices = {}
 Countmatrices = {}
