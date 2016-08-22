@@ -1,12 +1,17 @@
 import random
 import numpy as np
 
+<<<<<<< HEAD
 '''
 things to do:
 rewrite adj matrix
 '''
 k = 0 #k is a timestep counter
 numofinter = 25
+=======
+k = 1 #k is a timestep counter
+numofinter = 9
+>>>>>>> origin/traffic_sim_multiagent
 numofneighbours = 3
 numofstates = 1296
 #i will have a dictionary like so: {(1,1):[1,2,3,4], (1,2):[1,2,3,4]}
@@ -58,15 +63,15 @@ def findactionindex(actiontuple):
     return index
 
 def lanethreshold(int):
-    if int < 6:
+    if int < 4:
         return 0
-    elif int < 12:
+    elif int < 8:
         return 0.5
     else:
         return 1
 
 def timethreshold(int):
-    if int < 5:
+    if int < 10:
         return 0
     else:
         return 1
@@ -208,7 +213,7 @@ def qlearning(state_dict):
                 updateQ(i, j, findindex(prevjointstate), jointstate_and_action_tuple[1],max_expectedqvalue,reward)
 
         #Take action
-        if k <= 20000:
+        if k <= 2000:
             epsilon = random.random()
             if epsilon < 0.6:
                 maxvalue = -9999999
