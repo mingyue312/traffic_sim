@@ -1,17 +1,13 @@
 import random
 import numpy as np
 
-<<<<<<< HEAD
 '''
 things to do:
 rewrite adj matrix
 '''
-k = 0 #k is a timestep counter
-numofinter = 25
-=======
 k = 1 #k is a timestep counter
-numofinter = 9
->>>>>>> origin/traffic_sim_multiagent
+numofinter = 25
+
 numofneighbours = 3
 numofstates = 1296
 #i will have a dictionary like so: {(1,1):[1,2,3,4], (1,2):[1,2,3,4]}
