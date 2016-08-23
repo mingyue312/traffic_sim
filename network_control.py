@@ -19,7 +19,7 @@ def network_control():
     input_dict = {}
     for inter in map_init.intersections:
         action[inter] = 1  # start with NSGREEN_WERED
-        action[inter] = -1
+        #action[inter] = -1
     prev_action = action.copy()
 
     while macros.SIM_TIME <= macros.DURATION:
