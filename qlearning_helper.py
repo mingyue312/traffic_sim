@@ -8,7 +8,7 @@ def get_queue_len(internum):
     for lane in inter.cars_queue:
         counter = 0
         current_car = inter.cars_queue[lane]
-        while current_car and current_car.speed <= 1:
+        while current_car and current_car.speed <= 2:
             counter += 1
             if current_car == current_car.next:
                 print('Current = Next')

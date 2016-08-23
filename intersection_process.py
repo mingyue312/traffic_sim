@@ -486,9 +486,14 @@ def process_one_lane(current_lane, current_inter_num, signal):
     (opposite_left_lane, opposite_right_lane, opposite_len, left_target_lane, left_target_intersection,
      right_target_lane, right_target_intersection, current_len, straight_target) = get_needed_data(current_lane)
     current_length = getattr(current_inter, current_len)
+    count = 0
 
     if signal == macros.GREEN:
         while current_car:
+            count += 1
+            if count >= 50:
+                current_inter.cars_queue[current_lane] = None
+                return
             if current_car == current_car.next:
                 current_car.next = None
                 current_car.prev = None
@@ -556,8 +561,11 @@ def process_one_lane(current_lane, current_inter_num, signal):
             current_car = next_car
 
     elif signal == macros.YELLOW:
-
         while current_car:
+            count += 1
+            if count >= 50:
+                current_inter.cars_queue[current_lane] = None
+                return
             if current_car == current_car.next:
                 current_car.next = None
                 current_car.prev = None
@@ -640,6 +648,10 @@ def process_one_lane(current_lane, current_inter_num, signal):
 
     elif signal == macros.RED:
         while current_car:
+            count += 1
+            if count >= 50:
+                current_inter.cars_queue[current_lane] = None
+                return
             if current_car == current_car.next:
                 current_car.next = None
                 current_car.prev = None
