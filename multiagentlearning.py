@@ -236,7 +236,7 @@ def qlearning(state_dict):
                 updateQ(i, j, findindex(prevjointstate), jointstate_and_action_tuple[1],max_expectedqvalue,reward)
 
         #Take action
-        if k <= 3000:
+        if k <= 2000:
             epsilon = random.random()
             if epsilon < 0.6:
                 maxvalue = -9999999
