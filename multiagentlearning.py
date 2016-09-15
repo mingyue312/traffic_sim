@@ -58,12 +58,16 @@ def initialize(input_numofinter,input_numofneighbours):
     # numofinter = input_numofinter
 
     for i in range(0,numofinter):
+        agentneighbourexists = 0
         for j in range(0,numofinter):
             #i is the agent inter j is the neighbour inter
             if adjmat[i][j] == 1:
+                agentneighbourexists = 1
                 Mmatrices[(agents[i],agents[j])] = np.full((numofstates, 2), 1 / 2)
                 Countmatrices[(agents[i],agents[j])] = np.zeros((numofstates, 2))
                 Qmatrices[(agents[i],agents[j])] = np.zeros((numofstates, 4))
+        if agentneighbourexists == 0:
+            Qmatrices[(agents[i],agents[i])] = np.zeros((numofstates, 4))
     return
 
 def findindex(jointstate):
@@ -206,12 +210,15 @@ def qlearning(state_dict):
     global prevstate
     global agents
     global k
+    global Qmatrices
 
     action_dict = {}
     for i in range(0,numofinter):
         agentindex = i
+        agentneighbourexists = 0 #this is a flag variable
         for j in range(0,numofinter):
             if adjmat[i][j] == 1:
+                agentneighbourexists =1
                 neighbourindex = j
                 #store the jointstate of the agent and neighbour, and the prev actions
                 #stored as: ([jointstate list], (agent_prev_action, neighbour_prev_action))
@@ -234,70 +241,115 @@ def qlearning(state_dict):
                 # below updating qfunction uses stateindex of prev state of agent
                 prevjointstate = prevstate[agents[agentindex]]+prevstate[agents[neighbourindex]]
                 updateQ(i, j, findindex(prevjointstate), jointstate_and_action_tuple[1],max_expectedqvalue,reward)
+        if agentneighbourexists == 0:
+            state_and_action_tuple = observe(state_dict,i,i)
+            stateindex = findindex(state_and_action_tuple[0])
+            prevagentstate = prevstate[agents[agentindex]]+prevstate[agents[agentindex]]
+            max_expectedqvalue = max(Qmatrices[(agents[agentindex],agents[agentindex])][stateindex])
+            reward = calcreward(prevstate[agents[agentindex]],prevstate[agents[agentindex]],state_and_action_tuple[0][0:4],state_and_action_tuple[0][4:8])
+            updateQ(agentindex,agentindex,findindex(prevagentstate),state_and_action_tuple[1],max_expectedqvalue,reward/2)
+
 
         #Take action
         if k <= 2000:
-            epsilon = random.random()
-            if epsilon < 0.6:
+            if agentneighbourexists == 0:
+                epsilon = random.random()
+                if epsilon < 0.6:
+                    if Qmatrices[(agents[agentindex],agents[agentindex])][stateindex][0] == Qmatrices[(agents[agentindex],agents[agentindex])][stateindex][3]:
+                        randomnum = random.random()
+                        if randomnum < 0.5:
+                            curaction = 0
+                        else:
+                            curaction = 1
+                    elif Qmatrices[(agents[agentindex],agents[agentindex])][stateindex][0] > Qmatrices[(agents[agentindex],agents[agentindex])][stateindex][3]:
+                        curaction = 0
+                    else:
+                        curaction = 1
+                else:
+                    randomnum = random.random()
+                    if randomnum < 0.5:
+                        curaction = 0
+                    else:
+                        curaction = 1
+
+
+            else:
+                epsilon = random.random()
+                if epsilon < 0.6:
+                    maxvalue = -9999999
+                    for agentaction in range(0,2):
+                        curaction = -1
+                        curvalue = 0
+                        for j in range(0,numofinter):
+                            if adjmat[i][j] == 1:
+                                neighbourindex = j
+                                jointstate_and_action_tuple = observe(state_dict, i, j)
+                                stateindex = findindex(jointstate_and_action_tuple[0])
+                                for neighbaction in range(0,2):
+                                    actiontuple = (agentaction,neighbaction)
+                                    actionindex = findactionindex(actiontuple)
+                                    curvalue+= (Qmatrices[(agents[agentindex], agents[neighbourindex])][stateindex][actionindex])* \
+                                    (Mmatrices[(agents[agentindex], agents[neighbourindex])][stateindex][neighbaction])
+                        if curvalue >= maxvalue:
+                            if curvalue == maxvalue:
+                                if curaction == -1:
+                                    curaction = agentaction
+                                else:
+                                    curaction = random.randint(0,1)
+                            else:
+                                curaction = agentaction
+                            maxvalue = curvalue
+                else:
+                    curaction = random.randint(0,1)
+
+                action_dict[agents[i]] = curaction
+                prevaction[agents[i]] = curaction
+                prevstate[agents[i]] = jointstate_and_action_tuple[0][0:4]
+        else:
+            if agentneighbourexists == 0:
+                if Qmatrices[(agents[agentindex], agents[agentindex])][stateindex][0] == \
+                        Qmatrices[(agents[agentindex], agents[agentindex])][stateindex][3]:
+                    randomnum = random.random()
+                    if randomnum < 0.5:
+                        curaction = 0
+                    else:
+                        curaction = 1
+                elif Qmatrices[(agents[agentindex], agents[agentindex])][stateindex][0] > \
+                        Qmatrices[(agents[agentindex], agents[agentindex])][stateindex][3]:
+                    curaction = 0
+                else:
+                    curaction = 1
+
+            else:
                 maxvalue = -9999999
-                for agentaction in range(0,2):
+                for agentaction in range(0, 2):
                     curaction = -1
                     curvalue = 0
-                    for j in range(0,numofinter):
+                    for j in range(0, numofinter):
                         if adjmat[i][j] == 1:
                             neighbourindex = j
                             jointstate_and_action_tuple = observe(state_dict, i, j)
                             stateindex = findindex(jointstate_and_action_tuple[0])
-                            for neighbaction in range(0,2):
-                                actiontuple = (agentaction,neighbaction)
+                            for neighbaction in range(0, 2):
+                                actiontuple = (agentaction, neighbaction)
                                 actionindex = findactionindex(actiontuple)
-                                curvalue+= (Qmatrices[(agents[agentindex], agents[neighbourindex])][stateindex][actionindex])* \
-                                (Mmatrices[(agents[agentindex], agents[neighbourindex])][stateindex][neighbaction])
+                                curvalue += (Qmatrices[(agents[agentindex], agents[neighbourindex])][stateindex][
+                                                 actionindex]) * \
+                                            (Mmatrices[(agents[agentindex], agents[neighbourindex])][stateindex][
+                                                 neighbaction])
                     if curvalue >= maxvalue:
                         if curvalue == maxvalue:
                             if curaction == -1:
                                 curaction = agentaction
                             else:
-                                curaction = random.randint(0,1)
+                                curaction = random.randint(0, 1)
                         else:
                             curaction = agentaction
                         maxvalue = curvalue
-            else:
-                curaction = random.randint(0,1)
 
-            action_dict[agents[i]] = curaction
-            prevaction[agents[i]] = curaction
-            prevstate[agents[i]] = jointstate_and_action_tuple[0][0:4]
-        else:
-            maxvalue = -9999999
-            for agentaction in range(0, 2):
-                curaction = -1
-                curvalue = 0
-                for j in range(0, numofinter):
-                    if adjmat[i][j] == 1:
-                        neighbourindex = j
-                        jointstate_and_action_tuple = observe(state_dict, i, j)
-                        stateindex = findindex(jointstate_and_action_tuple[0])
-                        for neighbaction in range(0, 2):
-                            actiontuple = (agentaction, neighbaction)
-                            actionindex = findactionindex(actiontuple)
-                            curvalue += (Qmatrices[(agents[agentindex], agents[neighbourindex])][stateindex][
-                                             actionindex]) * \
-                                        (Mmatrices[(agents[agentindex], agents[neighbourindex])][stateindex][
-                                             neighbaction])
-                if curvalue >= maxvalue:
-                    if curvalue == maxvalue:
-                        if curaction == -1:
-                            curaction = agentaction
-                        else:
-                            curaction = random.randint(0, 1)
-                    else:
-                        curaction = agentaction
-                    maxvalue = curvalue
-
-            action_dict[agents[i]] = curaction
-            prevaction[agents[i]] = curaction
-            prevstate[agents[i]] = jointstate_and_action_tuple[0][0:4]
+                action_dict[agents[i]] = curaction
+                prevaction[agents[i]] = curaction
+                prevstate[agents[i]] = jointstate_and_action_tuple[0][0:4]
     k += 1
     return action_dict
 
